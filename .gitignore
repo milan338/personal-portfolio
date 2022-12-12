@@ -1,4 +1,8 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# vscode
+.vscode
+
+# clangd
+.cache
 
 # dependencies
 /node_modules
@@ -18,6 +22,9 @@
 # misc
 .DS_Store
 *.pem
+
+# deepcode
+.dccache
 
 # debug
 npm-debug.log*
