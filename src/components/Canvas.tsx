@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
     createProgramInfo,
     setDefaults,
@@ -22,11 +22,13 @@ export type CanvasCbProps = {
 
 export type RenderCb = (deltaTime: number) => Uniforms;
 
+type RenderCallbacks = {
+    renderCb: RenderCb;
+    cleanupCb: () => void;
+};
+
 type CanvasProps = {
-    cb: (props: CanvasCbProps) => {
-        renderCb: RenderCb;
-        cleanupCb: () => void;
-    };
+    cb: (props: CanvasCbProps) => RenderCallbacks;
     arrays: Arrays;
     vertexShader?: string;
     fragmentShader?: string;
@@ -37,27 +39,44 @@ setDefaults({ attribPrefix: 'a_' });
 
 export default function Canvas(props: CanvasProps) {
     const { cb, arrays, vertexShader, fragmentShader, children } = props;
-    const cleanup = useRef(() => {});
+    const [gl, setGl] = useState<WebGLRenderingContext | null>(null);
+    const shaders = useRef<{ vert: string; frag: string }>({ vert: '', frag: '' });
+    const bufferInfo = useRef<BufferInfo | undefined>();
+    const programInfo = useRef<ProgramInfo | undefined>();
+    const renderCallbacks = useRef<RenderCallbacks | undefined>();
+    const cleanup = useRef<(() => void) | undefined>();
 
-    // Run once on component mount, and once on unmount (with null)
-    const withCanvas = (canvas: HTMLCanvasElement | null) => {
-        // Run cleanup procedure
-        if (canvas === null) {
-            cleanup.current();
-            return;
-        }
-
-        const gl = canvas.getContext('webgl');
+    // Create program and buffer info
+    useEffect(() => {
         if (gl === null) return;
+        if (
+            programInfo.current === undefined ||
+            vertexShader !== shaders.current.vert ||
+            fragmentShader !== shaders.current.frag
+        ) {
+            programInfo.current = createProgramInfo(gl, [vertexShader ?? '', fragmentShader ?? '']);
+            shaders.current = { vert: vertexShader ?? '', frag: fragmentShader ?? '' };
+        }
+        bufferInfo.current = createBufferInfoFromArrays(gl, arrays);
+        renderCallbacks.current = cb({
+            gl,
+            programInfo: programInfo.current,
+            bufferInfo: bufferInfo.current,
+        });
+    }, [gl, arrays, cb, vertexShader, fragmentShader]);
 
-        const programInfo = createProgramInfo(gl, [vertexShader ?? '', fragmentShader ?? '']);
-        const bufferInfo = createBufferInfoFromArrays(gl, arrays);
+    // Initialise render loop
+    useEffect(() => {
+        if (gl === null || renderCallbacks.current === undefined) return;
+
+        const { renderCb, cleanupCb } = renderCallbacks.current;
 
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
 
         // Render loop calls render cb and requests new frame at end of current frame
-        const { renderCb, cleanupCb } = cb({ gl, programInfo, bufferInfo });
         const render = (deltaTime: number) => {
+            if (!programInfo.current || !bufferInfo.current) return;
+
             // TODO intersection observer logic here to not render when offscreen
             // TODO control this behaviour with a prop
 
@@ -79,23 +98,36 @@ export default function Canvas(props: CanvasProps) {
 
             const uniforms = renderCb(deltaTime);
 
-            gl.useProgram(programInfo.program);
-            setBuffersAndAttributes(gl, programInfo, bufferInfo);
-            setUniforms(programInfo, uniforms);
-            drawBufferInfo(gl, bufferInfo);
+            gl.useProgram(programInfo.current.program);
+            setBuffersAndAttributes(gl, programInfo.current, bufferInfo.current);
+            setUniforms(programInfo.current, uniforms);
+            drawBufferInfo(gl, bufferInfo.current);
 
             requestAnimationFrame(render);
         };
         // Begin render loop
         cleanup.current = cleanupCb;
         requestAnimationFrame(render);
+    }, [gl]);
+
+    // Initialise the component cleanup
+    useEffect(() => {
+        return () => {
+            if (cleanup.current) cleanup.current();
+        };
+    }, []);
+
+    // Run once on component mount, and once on unmount (with null)
+    const withCanvas = (canvas: HTMLCanvasElement | null) => {
+        if (canvas === null || gl !== null) return;
+        setGl(canvas.getContext('webgl'));
     };
 
     return (
         <>
             <canvas ref={withCanvas} />
             <style jsx>{`
-                /* TODO replace */
+                /* TODO replace with not style jsx to reduce bundle sizes */
                 canvas {
                     display: block;
                     width: 100%;
