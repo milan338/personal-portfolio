@@ -24,7 +24,6 @@ export type RenderCb = (deltaTime: number) => Uniforms;
 
 type RenderCallbacks = {
     renderCb: RenderCb;
-    cleanupCb: () => void;
 };
 
 type CanvasProps = {
@@ -44,7 +43,7 @@ export default function Canvas(props: CanvasProps) {
     const bufferInfo = useRef<BufferInfo | undefined>();
     const programInfo = useRef<ProgramInfo | undefined>();
     const renderCallbacks = useRef<RenderCallbacks | undefined>();
-    const cleanup = useRef<(() => void) | undefined>();
+    const isCanvasVisible = useRef(true);
 
     // Create program and buffer info
     useEffect(() => {
@@ -69,7 +68,7 @@ export default function Canvas(props: CanvasProps) {
     useEffect(() => {
         if (gl === null || renderCallbacks.current === undefined) return;
 
-        const { renderCb, cleanupCb } = renderCallbacks.current;
+        const { renderCb } = renderCallbacks.current;
 
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
 
@@ -77,17 +76,7 @@ export default function Canvas(props: CanvasProps) {
         const render = (deltaTime: number) => {
             if (!programInfo.current || !bufferInfo.current) return;
 
-            // TODO intersection observer logic here to not render when offscreen
-            // TODO control this behaviour with a prop
-
-            // Don't render frame - exit early
-            // TODO have a prop to specify if should render only on mouse move
-            // if (!renderFrame) {
-            //     requestAnimationFrame(render);
-            //     return;
-            // }
-
-            resizeCanvasToDisplaySize(gl.canvas as HTMLCanvasElement);
+            resizeCanvasToDisplaySize(gl.canvas as HTMLCanvasElement, window.devicePixelRatio);
             gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
             gl.enable(gl.DEPTH_TEST);
@@ -103,19 +92,26 @@ export default function Canvas(props: CanvasProps) {
             setUniforms(programInfo.current, uniforms);
             drawBufferInfo(gl, bufferInfo.current);
 
-            requestAnimationFrame(render);
+            // Request the next frame if canvas is visible
+            if (isCanvasVisible.current) requestAnimationFrame(render);
         };
         // Begin render loop
-        cleanup.current = cleanupCb;
         requestAnimationFrame(render);
-    }, [gl]);
 
-    // Initialise the component cleanup
-    useEffect(() => {
+        // Only render while canvas on screen
+        const observer = new IntersectionObserver((entries) => {
+            const [entry] = entries;
+            isCanvasVisible.current = entry.isIntersecting;
+            // Last state was invisible, so manually trigger a frame to restart the frameloop
+            if (entry.isIntersecting) requestAnimationFrame(render);
+        });
+        observer.observe(gl.canvas as HTMLCanvasElement);
+
+        // Cleanup
         return () => {
-            if (cleanup.current) cleanup.current();
+            observer.disconnect();
         };
-    }, []);
+    }, [gl]);
 
     // Run once on component mount, and once on unmount (with null)
     const withCanvas = (canvas: HTMLCanvasElement | null) => {
