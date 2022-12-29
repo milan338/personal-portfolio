@@ -18,8 +18,8 @@ export function useWindowSize() {
         // Resize observer correctly identifies resizes where window.addEventListener('resize', cb) fails to
         const observer = new ResizeObserver((entries) => {
             const [entry] = entries;
-            const { width, height } = entry.contentRect;
-            setWindowSize([width, height]);
+            const { inlineSize, blockSize } = entry.contentBoxSize[0];
+            setWindowSize([inlineSize, blockSize]);
         });
 
         observer.observe(windowSizeElement);
