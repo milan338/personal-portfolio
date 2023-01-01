@@ -119,7 +119,10 @@
         "new-parens": "error",
         "import/no-internal-modules": "off",
         "import/no-named-as-default": "off",
-        "import/no-unresolved": "error",
+        "import/no-unresolved": [
+          "error",
+          { "ignore": ["\\.glsl", "\\.vs", "\\.fs", "\\.vert$", "\\.frag$"] }
+        ],
         "import/no-duplicates": "error",
         "prettier/prettier": "error",
         "unicorn/custom-error-definition": "error",
@@ -232,8 +235,7 @@
           "typescript": {
             "alwaysTryTypes": true,
             "project": ["./tsconfig.json"]
-          },
-          "node": true
+          }
         }
       }
     },
@@ -308,5 +310,10 @@
         "unicorn/prefer-module": "off"
       }
     }
-  ]
+  ],
+  "settings": {
+    "import/resolver": {
+      "node": true
+    }
+  }
 }
