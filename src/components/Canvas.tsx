@@ -4,12 +4,12 @@ import { useEffect, useRef, useState } from 'react';
 import {
     createProgramInfo,
     setDefaults,
-    resizeCanvasToDisplaySize,
     createBufferInfoFromArrays,
     drawBufferInfo,
     setBuffersAndAttributes,
     setUniforms,
 } from 'twgl.js';
+import { withBoundingClientRect } from 'utils/dom';
 import type { ProgramInfo, BufferInfo, Arrays } from 'twgl.js';
 
 export type Uniforms = Record<string, unknown>;
@@ -35,6 +35,23 @@ type CanvasProps = {
 };
 
 setDefaults({ attribPrefix: 'a_' });
+
+/**
+ * Resize canvas to match its real size and factor in the device pixel ratio.
+ * @param canvas The canvas to resize
+ * @see https://github.com/greggman/twgl.js/blob/master/src/twgl.js
+ */
+function resizeCanvasToDisplaySize(canvas: HTMLCanvasElement) {
+    withBoundingClientRect(({ width, height }) => {
+        // No update needed
+        if (canvas.width === width || canvas.height === height) return;
+        // Cap the DPI at 2, since some mobile displays go to higher values like 4 which
+        // May seriously slow down performance due to the number of pixels
+        const dpi = Math.min(window.devicePixelRatio, 2);
+        canvas.width = width * dpi;
+        canvas.height = height * dpi;
+    }, canvas);
+}
 
 export default function Canvas(props: CanvasProps) {
     const { cb, arrays, vertexShader, fragmentShader, children } = props;
@@ -76,7 +93,7 @@ export default function Canvas(props: CanvasProps) {
         const render = (deltaTime: number) => {
             if (!programInfo.current || !bufferInfo.current) return;
 
-            resizeCanvasToDisplaySize(gl.canvas as HTMLCanvasElement, window.devicePixelRatio);
+            resizeCanvasToDisplaySize(gl.canvas as HTMLCanvasElement);
             gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
             gl.enable(gl.DEPTH_TEST);
