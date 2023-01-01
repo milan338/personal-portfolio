@@ -23,7 +23,15 @@
   "importOrder": ["<THIRD_PARTY_MODULES>", "^[./]", "<THIRD_PARTY_TYPES>", "<TYPE>^[./]"],
   "overrides": [
     {
-      "files": ["*.yaml", "*.yml", "*.json", "*.config.{js,ts}", "*rc", "*rc.{js,ts}"],
+      "files": [
+        "*.yaml",
+        "*.yml",
+        "*.json",
+        "*.config.{js,ts}",
+        "*rc",
+        "*rc.{js,ts}",
+        ".clang-format"
+      ],
       "options": {
         "tabWidth": 2
       }

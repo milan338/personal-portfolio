@@ -133,8 +133,7 @@
           {
             "name": "err"
           }
-        ],
-        "security/detect-object-injection": "off" // Issues warnings when accessing Vector
+        ]
       }
     },
     {
@@ -227,7 +226,7 @@
       },
       "settings": {
         "import/parsers": {
-          "@typescript-eslint/parser": [".ts"]
+          "@typescript-eslint/parser": [".ts", ".tsx"]
         },
         "import/resolver": {
           "typescript": {

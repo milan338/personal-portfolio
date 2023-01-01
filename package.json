@@ -6,6 +6,7 @@
     "setup": "npm install && patch-package",
     "dev": "next dev",
     "build": "next build",
+    "analyse": "cross-env ANALYSE=true next build",
     "start": "next start",
     "lint": "next lint",
     "stylelint": "npx stylelint \"**/*.{css,scss,jsx,tsx}\""
@@ -14,21 +15,25 @@
     "next": "13.0.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "twgl.js": "5.3.0",
     "typescript": "4.9.4"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "13.1.1",
     "@trivago/prettier-plugin-sort-imports": "4.0.0",
     "@types/node": "18.11.13",
     "@types/react": "18.0.26",
     "@types/react-dom": "18.0.9",
     "@typescript-eslint/eslint-plugin": "5.46.0",
     "@typescript-eslint/parser": "5.46.0",
+    "autoprefixer": "10.4.13",
+    "cross-env": "7.0.3",
     "eslint": "8.29.0",
     "eslint-config-next": "13.0.6",
     "eslint-config-prettier": "8.5.0",
     "eslint-formatter-pretty": "4.1.0",
     "eslint-import-resolver-typescript": "3.5.2",
-    "eslint-plugin-import": "2.26.0",
+    "eslint-plugin-import": "2.25.2",
     "eslint-plugin-jsx-a11y": "6.6.1",
     "eslint-plugin-no-unsanitized": "4.0.2",
     "eslint-plugin-prettier": "4.2.1",
@@ -40,6 +45,7 @@
     "eslint-plugin-sonarjs": "0.17.0",
     "eslint-plugin-unicorn": "45.0.1",
     "patch-package": "6.5.0",
+    "postcss": "8.4.20",
     "postcss-scss": "4.0.6",
     "postcss-styled-jsx": "1.0.1",
     "prettier-plugin-jsdoc": "0.4.2",
@@ -55,6 +61,8 @@
     "stylelint-high-performance-animation": "1.7.0",
     "stylelint-no-unsupported-browser-features": "6.0.1",
     "stylelint-prettier": "2.0.0",
-    "stylelint-value-no-unknown-custom-properties": "4.0.0"
+    "stylelint-value-no-unknown-custom-properties": "4.0.0",
+    "tailwindcss": "3.2.4",
+    "webpack-glsl-minify": "1.5.0"
   }
 }
