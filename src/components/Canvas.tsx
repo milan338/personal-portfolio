@@ -43,13 +43,14 @@ setDefaults({ attribPrefix: 'a_' });
  */
 function resizeCanvasToDisplaySize(canvas: HTMLCanvasElement) {
     withBoundingClientRect(({ width, height }) => {
-        // No update needed
-        if (canvas.width === width || canvas.height === height) return;
         // Cap the DPI at 2, since some mobile displays go to higher values like 4 which
         // May seriously slow down performance due to the number of pixels
         const dpi = Math.min(window.devicePixelRatio, 2);
-        canvas.width = width * dpi;
-        canvas.height = height * dpi;
+        const [newWidth, newHeight] = [width * dpi, height * dpi];
+        // No update needed
+        if (canvas.width === newWidth && canvas.height === newHeight) return;
+        canvas.width = newWidth;
+        canvas.height = newHeight;
     }, canvas);
 }
 
