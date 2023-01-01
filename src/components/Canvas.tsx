@@ -10,6 +10,7 @@ import {
     setUniforms,
 } from 'twgl.js';
 import { withBoundingClientRect } from 'utils/dom';
+import { getDpi } from 'utils/window';
 import type { ProgramInfo, BufferInfo, Arrays } from 'twgl.js';
 
 export type Uniforms = Record<string, unknown>;
@@ -43,9 +44,7 @@ setDefaults({ attribPrefix: 'a_' });
  */
 function resizeCanvasToDisplaySize(canvas: HTMLCanvasElement) {
     withBoundingClientRect(({ width, height }) => {
-        // Cap the DPI at 2, since some mobile displays go to higher values like 4 which
-        // May seriously slow down performance due to the number of pixels
-        const dpi = Math.min(window.devicePixelRatio, 2);
+        const dpi = getDpi();
         const [newWidth, newHeight] = [width * dpi, height * dpi];
         // No update needed
         if (canvas.width === newWidth && canvas.height === newHeight) return;
