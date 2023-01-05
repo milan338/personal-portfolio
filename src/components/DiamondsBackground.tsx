@@ -4,6 +4,7 @@ import { useWindowSize } from 'hooks/window';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import frag from 'shaders/diamonds-background.frag';
 import vert from 'shaders/diamonds-background.vert';
+import { createNoise3D } from 'simplex-noise';
 import { withBoundingClientRect } from 'utils/dom';
 import { getDpi } from 'utils/window';
 import Canvas from './Canvas';
@@ -34,12 +35,18 @@ function makeDiamondVerts(
 }
 
 export default function DiamondsBackground() {
-    const mousePos = useRef<[x: number, y: number]>([-1, -1]);
-    const realMousePos = useRef<[x: number, y: number]>([-1, -1]);
+    const mousePos = useRef<[x: number, y: number]>([-9, -9]);
+    const realMousePos = useRef<[x: number, y: number]>([-9, -9]);
     const mouseEventListener = useRef<((e: MouseEvent) => void) | undefined>();
     const scrollEventListener = useRef<((e: Event) => void) | undefined>();
     const uniforms = useRef<Uniforms>();
+    const lastTime = useRef(0);
     const [windowW, windowH] = useWindowSize();
+
+    const noisePoints = useRef<number[]>([-0.7, -0.7, -0.7, 0.7, 0.7, -0.7, 0.7, 0.7, 0, 0]);
+    const noiseFunctions = useMemo(() => {
+        return Array.from({ length: noisePoints.current.length / 2 }, () => createNoise3D());
+    }, []);
 
     const arrays = useMemo(() => {
         const nCellsVertical = 30;
@@ -124,22 +131,48 @@ export default function DiamondsBackground() {
             window.addEventListener('mousemove', mouseEventListener.current);
             window.addEventListener('scroll', scrollEventListener.current);
 
-            const renderCb: RenderCb = () => {
+            const renderCb: RenderCb = (deltaTime) => {
+                const frameTime = deltaTime - lastTime.current;
+                lastTime.current = deltaTime;
+
                 if (uniforms.current === undefined) uniforms.current = {};
+
                 uniforms.current[frag.uniforms.u_color.variableName] = [0, 0, 0, 1];
+                uniforms.current[frag.uniforms.u_opacity.variableName] = 0.015;
                 uniforms.current[vert.uniforms.u_cursorPos.variableName] = mousePos.current;
+                uniforms.current[vert.uniforms.u_pixelRatio.variableName] = getDpi();
+                uniforms.current[vert.uniforms.u_radiusScale.variableName] = 0.001_25;
+                uniforms.current[vert.uniforms.u_maxScale.variableName] = 1;
                 uniforms.current[vert.uniforms.u_resolution.variableName] = [
                     gl.canvas.width,
                     gl.canvas.height,
                 ];
-                uniforms.current[vert.uniforms.u_aspectRatio.variableName] = getDpi();
+
+                // Distance to move the point this frame
+                const dist = frameTime / 3000;
+                for (let i = 0; i < noiseFunctions.length; i++) {
+                    const j = 2 * i;
+                    const theta =
+                        noiseFunctions[i + 0](
+                            noisePoints.current[j + 0],
+                            noisePoints.current[j + 1],
+                            deltaTime / 10_000
+                        ) * Math.PI;
+                    noisePoints.current[j + 0] += dist * Math.cos(theta); // x-coordinate
+                    noisePoints.current[j + 1] += dist * Math.sin(theta); // y-coordinate
+                    // Keep points in the frame
+                    noisePoints.current[j + 0] = ((noisePoints.current[j + 0] + 1) % 2) - 1;
+                    noisePoints.current[j + 1] = ((noisePoints.current[j + 1] + 1) % 2) - 1;
+                }
+
+                uniforms.current[vert.uniforms.u_movingPoints.variableName] = noisePoints.current;
 
                 return uniforms.current;
             };
 
             return { renderCb };
         },
-        [windowH]
+        [noiseFunctions, windowH]
     );
 
     useEffect(() => {
