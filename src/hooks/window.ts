@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
+import { withResizeObserver } from 'utils/dom';
 
 type WindowSize = [width: number, height: number];
 
 /**
  * Custom React hook to get the current window size.
  * Will cause a component rerender whenever the window size changes.
- * @returns The current window dimensions
+ * @returns The current window dimensions.
  */
 export function useWindowSize() {
     const [windowSize, setWindowSize] = useState<WindowSize>([-1, -1]);
@@ -16,13 +17,9 @@ export function useWindowSize() {
         if (windowSizeElement === null) throw new Error('Failed to get window size');
 
         // Resize observer correctly identifies resizes where window.addEventListener('resize', cb) fails to
-        const observer = new ResizeObserver((entries) => {
-            const [entry] = entries;
-            const { inlineSize, blockSize } = entry.contentBoxSize[0];
-            setWindowSize([inlineSize, blockSize]);
-        });
-
-        observer.observe(windowSizeElement);
+        const observer = withResizeObserver(({ width, height }) => {
+            setWindowSize([width, height]);
+        }, windowSizeElement);
 
         return () => observer.unobserve(windowSizeElement);
     }, []);

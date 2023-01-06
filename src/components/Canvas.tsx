@@ -1,5 +1,6 @@
 'use client';
 
+import { useResizeObserver } from 'hooks/dom';
 import { useEffect, useRef, useState } from 'react';
 import {
     createProgramInfo,
@@ -9,14 +10,16 @@ import {
     setBuffersAndAttributes,
     setUniforms,
 } from 'twgl.js';
-import { withBoundingClientRect } from 'utils/dom';
 import { getDpi } from 'utils/window';
+import type { Size } from 'hooks/dom';
+import type { MutableRefObject } from 'react';
 import type { ProgramInfo, BufferInfo, Arrays } from 'twgl.js';
 
 export type Uniforms = Record<string, unknown>;
 
 export type CanvasCbProps = {
     gl: WebGLRenderingContext;
+    canvasSize: MutableRefObject<Size>;
     programInfo: ProgramInfo;
     bufferInfo: BufferInfo;
 };
@@ -39,23 +42,21 @@ setDefaults({ attribPrefix: 'a_' });
 
 /**
  * Resize canvas to match its real size and factor in the device pixel ratio.
- * @param canvas The canvas to resize
+ * @param canvas The canvas to resize.
  * @see https://github.com/greggman/twgl.js/blob/master/src/twgl.js
  */
-function resizeCanvasToDisplaySize(canvas: HTMLCanvasElement) {
-    withBoundingClientRect(({ width, height }) => {
-        const dpi = getDpi();
-        const [newWidth, newHeight] = [width * dpi, height * dpi];
-        // No update needed
-        if (canvas.width === newWidth && canvas.height === newHeight) return;
-        canvas.width = newWidth;
-        canvas.height = newHeight;
-    }, canvas);
+function resizeCanvasToDisplaySize(width: number, height: number, canvas: HTMLCanvasElement) {
+    const dpi = getDpi();
+    const [newWidth, newHeight] = [width * dpi, height * dpi];
+    if (canvas.width === newWidth && canvas.height === newHeight) return;
+    canvas.width = newWidth;
+    canvas.height = newHeight;
 }
 
 export default function Canvas(props: CanvasProps) {
     const { cb, arrays, vertexShader, fragmentShader, children } = props;
     const [gl, setGl] = useState<WebGLRenderingContext | null>(null);
+    const [canvasSize, observeCanvasSize] = useResizeObserver();
     const shaders = useRef<{ vert: string; frag: string }>({ vert: '', frag: '' });
     const bufferInfo = useRef<BufferInfo | undefined>();
     const programInfo = useRef<ProgramInfo | undefined>();
@@ -76,10 +77,11 @@ export default function Canvas(props: CanvasProps) {
         bufferInfo.current = createBufferInfoFromArrays(gl, arrays);
         renderCallbacks.current = cb({
             gl,
+            canvasSize,
             programInfo: programInfo.current,
             bufferInfo: bufferInfo.current,
         });
-    }, [gl, arrays, cb, vertexShader, fragmentShader]);
+    }, [gl, canvasSize, arrays, cb, vertexShader, fragmentShader]);
 
     // Initialise render loop
     useEffect(() => {
@@ -93,7 +95,8 @@ export default function Canvas(props: CanvasProps) {
         const render = (deltaTime: number) => {
             if (!programInfo.current || !bufferInfo.current) return;
 
-            resizeCanvasToDisplaySize(gl.canvas as HTMLCanvasElement);
+            const { width, height } = canvasSize.current;
+            resizeCanvasToDisplaySize(width, height, gl.canvas as HTMLCanvasElement);
             gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
             gl.enable(gl.DEPTH_TEST);
@@ -128,12 +131,13 @@ export default function Canvas(props: CanvasProps) {
         return () => {
             observer.disconnect();
         };
-    }, [gl]);
+    }, [canvasSize, gl]);
 
     // Run once on component mount, and once on unmount (with null)
     const withCanvas = (canvas: HTMLCanvasElement | null) => {
         if (canvas === null || gl !== null) return;
         setGl(canvas.getContext('webgl'));
+        observeCanvasSize(canvas);
     };
 
     return (

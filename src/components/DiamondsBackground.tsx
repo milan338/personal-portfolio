@@ -5,11 +5,15 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import frag from 'shaders/diamonds-background.frag';
 import vert from 'shaders/diamonds-background.vert';
 import { createNoise3D } from 'simplex-noise';
-import { withBoundingClientRect } from 'utils/dom';
 import { getDpi } from 'utils/window';
 import Canvas from './Canvas';
 import type { Arrays } from 'twgl.js';
 import type { RenderCb, CanvasCbProps, Uniforms } from './Canvas';
+
+const BASE_RADIUS_SCALE = 0.001_12;
+const BASE_WINDOW_WIDTH = 1920;
+const BASE_OPACITY = 0.02;
+const BASE_MAX_SCALE = 1;
 
 /**
  * Create vertices and centroid attributes for a diamond
@@ -91,9 +95,7 @@ export default function DiamondsBackground() {
     };
 
     const canvasCb = useCallback(
-        (canvasCbProps: CanvasCbProps) => {
-            const { gl } = canvasCbProps;
-
+        ({ gl, canvasSize }: CanvasCbProps) => {
             // TODO remove the event listeners when not rendering a frame
             // TODO or just pass in isRendering as a live data and just early break out the listeners if set to true
 
@@ -101,21 +103,17 @@ export default function DiamondsBackground() {
             cleanupEventListeners();
 
             mouseEventListener.current = (event: MouseEvent) => {
-                withBoundingClientRect(({ bottom, left, width, height }) => {
-                    const canvasCentre = [(left + width) / 2, (bottom + height) / 2];
+                const { width, height } = canvasSize.current;
 
-                    // Amount of scroll
-                    const diff = (windowH - bottom) / 2;
-
-                    // Set the mouse coordinates relative to the centre of the canvas
-                    mousePos.current = [
-                        -(canvasCentre[0] - event.x) / (width / 2),
-                        (canvasCentre[1] - (event.y + diff)) / (height / 2) - 1,
-                    ];
-
-                    // Update the actual mouse coordinates for use in the scroll listener
-                    realMousePos.current = [event.x, event.y];
-                }, gl.canvas as HTMLCanvasElement);
+                // Assuming the canvas will be filled to fit the screen to avoid polling scroll positions
+                const canvasCentre = [width / 2, height];
+                // Set the mouse coordinates relative to the centre of the canvas
+                mousePos.current = [
+                    -(canvasCentre[0] - event.x) / (width / 2),
+                    (canvasCentre[1] - event.y) / (height / 2) - 1,
+                ];
+                // Update the actual mouse coordinates for use in the scroll listener
+                realMousePos.current = [event.x, event.y];
             };
 
             // Force an update of the relative cursor coordinates upon scroll
@@ -135,14 +133,19 @@ export default function DiamondsBackground() {
                 const frameTime = deltaTime - lastTime.current;
                 lastTime.current = deltaTime;
 
+                const dpi = getDpi();
+                const baseS = BASE_RADIUS_SCALE;
+                const baseW = BASE_WINDOW_WIDTH;
+
                 if (uniforms.current === undefined) uniforms.current = {};
 
                 uniforms.current[frag.uniforms.u_color.variableName] = [0, 0, 0, 1];
-                uniforms.current[frag.uniforms.u_opacity.variableName] = 0.015;
+                uniforms.current[frag.uniforms.u_opacity.variableName] = BASE_OPACITY;
                 uniforms.current[vert.uniforms.u_cursorPos.variableName] = mousePos.current;
-                uniforms.current[vert.uniforms.u_pixelRatio.variableName] = getDpi();
-                uniforms.current[vert.uniforms.u_radiusScale.variableName] = 0.001_25;
-                uniforms.current[vert.uniforms.u_maxScale.variableName] = 1;
+                uniforms.current[vert.uniforms.u_pixelRatio.variableName] = dpi;
+                uniforms.current[vert.uniforms.u_maxScale.variableName] = BASE_MAX_SCALE;
+                uniforms.current[vert.uniforms.u_radiusScale.variableName] =
+                    baseS / (Math.min(windowW * dpi * 1.8, baseW * dpi) / (baseW * dpi));
                 uniforms.current[vert.uniforms.u_resolution.variableName] = [
                     gl.canvas.width,
                     gl.canvas.height,
@@ -156,7 +159,7 @@ export default function DiamondsBackground() {
                         noiseFunctions[i + 0](
                             noisePoints.current[j + 0],
                             noisePoints.current[j + 1],
-                            deltaTime / 10_000
+                            (deltaTime + 10_000) / 10_000
                         ) * Math.PI;
                     noisePoints.current[j + 0] += dist * Math.cos(theta); // x-coordinate
                     noisePoints.current[j + 1] += dist * Math.sin(theta); // y-coordinate
@@ -172,7 +175,7 @@ export default function DiamondsBackground() {
 
             return { renderCb };
         },
-        [noiseFunctions, windowH]
+        [noiseFunctions, windowW]
     );
 
     useEffect(() => {
