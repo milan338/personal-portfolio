@@ -1,13 +1,17 @@
+type ResizeObserverCb = (size: { width: number; height: number }) => void;
+
 /**
- * Use an element's bounding client without forcing a reflow
- * @param cb The callback function that receives the node's boundingClientRect
- * @param node The DOM node to get the boundingClientRect from
+ * Create a new resize observer that will call the given callback function on element resize.
+ * @param cb The callback function to be run on element resize.
+ * @param node The node whose size to observe.
+ * @returns The new resize observer. Must disconnect or unobserve eventually to release resources.
  */
-export function withBoundingClientRect(cb: (rect: DOMRectReadOnly) => void, node: Element) {
-    const observer = new IntersectionObserver((entries) => {
+export function withResizeObserver(cb: ResizeObserverCb, node: Element) {
+    const observer = new ResizeObserver((entries) => {
         const [entry] = entries;
-        cb(entry.boundingClientRect);
-        observer.disconnect();
+        const { inlineSize, blockSize } = entry.contentBoxSize[0];
+        cb({ width: inlineSize, height: blockSize });
     });
     observer.observe(node);
+    return observer;
 }
