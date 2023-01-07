@@ -42,7 +42,6 @@ export default function DiamondsBackground() {
     const mousePos = useRef<[x: number, y: number]>([-9, -9]);
     const realMousePos = useRef<[x: number, y: number]>([-9, -9]);
     const mouseEventListener = useRef<((e: MouseEvent) => void) | undefined>();
-    const scrollEventListener = useRef<((e: Event) => void) | undefined>();
     const uniforms = useRef<Uniforms>();
     const lastTime = useRef(0);
     const [windowW, windowH] = useWindowSize();
@@ -88,21 +87,16 @@ export default function DiamondsBackground() {
             window.removeEventListener('mousemove', mouseEventListener.current);
             mouseEventListener.current = undefined;
         }
-        if (scrollEventListener.current !== undefined) {
-            window.removeEventListener('scroll', scrollEventListener.current);
-            scrollEventListener.current = undefined;
-        }
     };
 
     const canvasCb = useCallback(
-        ({ gl, canvasSize }: CanvasCbProps) => {
-            // TODO remove the event listeners when not rendering a frame
-            // TODO or just pass in isRendering as a live data and just early break out the listeners if set to true
-
+        ({ gl, canvasSize, isCanvasVisible }: CanvasCbProps) => {
             // Remove existing event listeners
             cleanupEventListeners();
 
             mouseEventListener.current = (event: MouseEvent) => {
+                if (!isCanvasVisible.current) return;
+
                 const { width, height } = canvasSize.current;
 
                 // Assuming the canvas will be filled to fit the screen to avoid polling scroll positions
@@ -116,20 +110,12 @@ export default function DiamondsBackground() {
                 realMousePos.current = [event.x, event.y];
             };
 
-            // Force an update of the relative cursor coordinates upon scroll
-            scrollEventListener.current = () => {
-                const event = new MouseEvent('mousemove', {
-                    clientX: realMousePos.current[0],
-                    clientY: realMousePos.current[1],
-                });
-                window.dispatchEvent(event);
-            };
-
             // Update the event listeners
             window.addEventListener('mousemove', mouseEventListener.current);
-            window.addEventListener('scroll', scrollEventListener.current);
 
             const renderCb: RenderCb = (deltaTime) => {
+                if (!isCanvasVisible.current) return uniforms.current ?? {};
+
                 const frameTime = deltaTime - lastTime.current;
                 lastTime.current = deltaTime;
 
@@ -139,13 +125,15 @@ export default function DiamondsBackground() {
 
                 if (uniforms.current === undefined) uniforms.current = {};
 
+                const radScale =
+                    baseS / (Math.min(windowW * dpi * 1.8, baseW * dpi) / (baseW * dpi));
+
                 uniforms.current[frag.uniforms.u_color.variableName] = [0, 0, 0, 1];
                 uniforms.current[frag.uniforms.u_opacity.variableName] = BASE_OPACITY;
                 uniforms.current[vert.uniforms.u_cursorPos.variableName] = mousePos.current;
                 uniforms.current[vert.uniforms.u_pixelRatio.variableName] = dpi;
                 uniforms.current[vert.uniforms.u_maxScale.variableName] = BASE_MAX_SCALE;
-                uniforms.current[vert.uniforms.u_radiusScale.variableName] =
-                    baseS / (Math.min(windowW * dpi * 1.8, baseW * dpi) / (baseW * dpi));
+                uniforms.current[vert.uniforms.u_radiusScale.variableName] = radScale;
                 uniforms.current[vert.uniforms.u_resolution.variableName] = [
                     gl.canvas.width,
                     gl.canvas.height,
@@ -205,7 +193,8 @@ export default function DiamondsBackground() {
                 }
 
                 .diamonds-background {
-                    animation: fade-in 1s ease;
+                    animation: fade-in 1s ease forwards;
+                    opacity: 0;
                 }
             `}</style>
         </div>

@@ -20,6 +20,7 @@ export type Uniforms = Record<string, unknown>;
 export type CanvasCbProps = {
     gl: WebGLRenderingContext;
     canvasSize: MutableRefObject<Size>;
+    isCanvasVisible: MutableRefObject<boolean>;
     programInfo: ProgramInfo;
     bufferInfo: BufferInfo;
 };
@@ -78,6 +79,7 @@ export default function Canvas(props: CanvasProps) {
         renderCallbacks.current = cb({
             gl,
             canvasSize,
+            isCanvasVisible,
             programInfo: programInfo.current,
             bufferInfo: bufferInfo.current,
         });
