@@ -21,19 +21,24 @@ export type CanvasCbProps = {
     gl: WebGLRenderingContext;
     canvasSize: MutableRefObject<Size>;
     isCanvasVisible: MutableRefObject<boolean>;
-    programInfo: ProgramInfo;
-    bufferInfo: BufferInfo;
 };
 
 export type RenderCb = (deltaTime: number) => Uniforms;
 
+export type ArraysData = {
+    arrays: Arrays;
+    changed: boolean;
+    lastWidth: number;
+    lastHeight: number;
+};
+
 type RenderCallbacks = {
     renderCb: RenderCb;
+    arraysData: MutableRefObject<ArraysData>;
 };
 
 type CanvasProps = {
     cb: (props: CanvasCbProps) => RenderCallbacks;
-    arrays: Arrays;
     vertexShader?: string;
     fragmentShader?: string;
     children?: JSX.Element;
@@ -55,13 +60,13 @@ function resizeCanvasToDisplaySize(width: number, height: number, canvas: HTMLCa
 }
 
 export default function Canvas(props: CanvasProps) {
-    const { cb, arrays, vertexShader, fragmentShader, children } = props;
+    const { cb, vertexShader, fragmentShader, children } = props;
     const [gl, setGl] = useState<WebGLRenderingContext | null>(null);
     const [canvasSize, observeCanvasSize] = useResizeObserver();
     const shaders = useRef<{ vert: string; frag: string }>({ vert: '', frag: '' });
-    const bufferInfo = useRef<BufferInfo | undefined>();
-    const programInfo = useRef<ProgramInfo | undefined>();
-    const renderCallbacks = useRef<RenderCallbacks | undefined>();
+    const bufferInfo = useRef<BufferInfo>();
+    const programInfo = useRef<ProgramInfo>();
+    const renderCallbacks = useRef<RenderCallbacks>();
     const isCanvasVisible = useRef(true);
 
     // Create program and buffer info
@@ -75,27 +80,28 @@ export default function Canvas(props: CanvasProps) {
             programInfo.current = createProgramInfo(gl, [vertexShader ?? '', fragmentShader ?? '']);
             shaders.current = { vert: vertexShader ?? '', frag: fragmentShader ?? '' };
         }
-        bufferInfo.current = createBufferInfoFromArrays(gl, arrays);
         renderCallbacks.current = cb({
             gl,
             canvasSize,
             isCanvasVisible,
-            programInfo: programInfo.current,
-            bufferInfo: bufferInfo.current,
         });
-    }, [gl, canvasSize, arrays, cb, vertexShader, fragmentShader]);
+    }, [gl, canvasSize, cb, vertexShader, fragmentShader]);
 
     // Initialise render loop
     useEffect(() => {
         if (gl === null || renderCallbacks.current === undefined) return;
 
-        const { renderCb } = renderCallbacks.current;
+        const { renderCb, arraysData } = renderCallbacks.current;
 
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
 
         // Render loop calls render cb and requests new frame at end of current frame
         const render = (deltaTime: number) => {
-            if (!programInfo.current || !bufferInfo.current) return;
+            // Update buffer info if arrays have changed
+            if (arraysData.current.changed) {
+                arraysData.current.changed = false;
+                bufferInfo.current = createBufferInfoFromArrays(gl, arraysData.current.arrays);
+            }
 
             const { width, height } = canvasSize.current;
             resizeCanvasToDisplaySize(width, height, gl.canvas as HTMLCanvasElement);
@@ -109,10 +115,12 @@ export default function Canvas(props: CanvasProps) {
 
             const uniforms = renderCb(deltaTime);
 
-            gl.useProgram(programInfo.current.program);
-            setBuffersAndAttributes(gl, programInfo.current, bufferInfo.current);
-            setUniforms(programInfo.current, uniforms);
-            drawBufferInfo(gl, bufferInfo.current);
+            if (programInfo.current !== undefined && bufferInfo.current !== undefined) {
+                gl.useProgram(programInfo.current.program);
+                setBuffersAndAttributes(gl, programInfo.current, bufferInfo.current);
+                setUniforms(programInfo.current, uniforms);
+                drawBufferInfo(gl, bufferInfo.current);
+            }
 
             // Request the next frame if canvas is visible
             if (isCanvasVisible.current) requestAnimationFrame(render);
@@ -144,15 +152,7 @@ export default function Canvas(props: CanvasProps) {
 
     return (
         <>
-            <canvas ref={withCanvas} />
-            <style jsx>{`
-                /* TODO replace with not style jsx to reduce bundle sizes */
-                canvas {
-                    display: block;
-                    width: 100%;
-                    height: 100vh;
-                }
-            `}</style>
+            <canvas ref={withCanvas} className="block w-full h-screen" />
             {children}
         </>
     );

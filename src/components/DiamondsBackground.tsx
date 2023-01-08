@@ -7,8 +7,7 @@ import vert from 'shaders/diamonds-background.vert';
 import { createNoise3D } from 'simplex-noise';
 import { getDpi } from 'utils/window';
 import Canvas from './Canvas';
-import type { Arrays } from 'twgl.js';
-import type { RenderCb, CanvasCbProps, Uniforms } from './Canvas';
+import type { RenderCb, CanvasCbProps, Uniforms, ArraysData } from './Canvas';
 
 const BASE_RADIUS_SCALE = 0.001_12;
 const BASE_WINDOW_WIDTH = 1920;
@@ -44,14 +43,30 @@ export default function DiamondsBackground() {
     const mouseEventListener = useRef<((e: MouseEvent) => void) | undefined>();
     const uniforms = useRef<Uniforms>();
     const lastTime = useRef(0);
-    const [windowW, windowH] = useWindowSize();
+    const windowSize = useWindowSize();
+    const arraysData = useRef<ArraysData>({
+        arrays: {},
+        changed: false,
+        lastWidth: 0,
+        lastHeight: 0,
+    });
 
     const noisePoints = useRef<number[]>([-0.7, -0.7, -0.7, 0.7, 0.7, -0.7, 0.7, 0.7, 0, 0]);
     const noiseFunctions = useMemo(() => {
         return Array.from({ length: noisePoints.current.length / 2 }, () => createNoise3D());
     }, []);
 
-    const arrays = useMemo(() => {
+    const updateArrays = useCallback(() => {
+        const { width: windowW, height: windowH } = windowSize.current;
+
+        if (windowW === arraysData.current.lastWidth && windowH === arraysData.current.lastHeight)
+            return;
+
+        arraysData.current.lastWidth = windowW;
+        arraysData.current.lastHeight = windowH;
+
+        arraysData.current.changed = true;
+
         const nCellsVertical = 30;
         const cellSize = (windowH + 15) / nCellsVertical;
 
@@ -73,14 +88,11 @@ export default function DiamondsBackground() {
                 centroids.push(...cents);
             }
         }
-
-        const arr: Arrays = {
+        arraysData.current.arrays = {
             position: { numComponents: 2, data: vertices },
             centroid: { numComponents: 2, data: centroids },
         };
-
-        return arr;
-    }, [windowW, windowH]);
+    }, [windowSize]);
 
     const cleanupEventListeners = () => {
         if (mouseEventListener.current !== undefined) {
@@ -125,8 +137,8 @@ export default function DiamondsBackground() {
 
                 if (uniforms.current === undefined) uniforms.current = {};
 
-                const radScale =
-                    baseS / (Math.min(windowW * dpi * 1.8, baseW * dpi) / (baseW * dpi));
+                const w = windowSize.current.width;
+                const radScale = baseS / (Math.min(w * dpi * 1.8, baseW * dpi) / (baseW * dpi));
 
                 uniforms.current[frag.uniforms.u_color.variableName] = [0, 0, 0, 1];
                 uniforms.current[frag.uniforms.u_opacity.variableName] = BASE_OPACITY;
@@ -158,12 +170,14 @@ export default function DiamondsBackground() {
 
                 uniforms.current[vert.uniforms.u_movingPoints.variableName] = noisePoints.current;
 
+                updateArrays();
+
                 return uniforms.current;
             };
 
-            return { renderCb };
+            return { renderCb, arraysData };
         },
-        [noiseFunctions, windowW]
+        [noiseFunctions, updateArrays, windowSize]
     );
 
     useEffect(() => {
@@ -174,13 +188,14 @@ export default function DiamondsBackground() {
     }, []);
 
     return (
-        <div className="diamonds-background">
-            <Canvas
-                cb={canvasCb}
-                arrays={arrays}
-                vertexShader={vert.sourceCode}
-                fragmentShader={frag.sourceCode}
-            />
+        <div className="bg-white">
+            <div className="diamonds-background">
+                <Canvas
+                    cb={canvasCb}
+                    vertexShader={vert.sourceCode}
+                    fragmentShader={frag.sourceCode}
+                />
+            </div>
             <style jsx>{`
                 @keyframes fade-in {
                     0% {
