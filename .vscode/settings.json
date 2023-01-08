@@ -1,0 +1,6 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "cSpell.words": ["mediump", "texcoord", "twgl"],
+  "css.customData": ["./.vscode/tailwind-css-data.json"]
+}

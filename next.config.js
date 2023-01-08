@@ -2,8 +2,6 @@ const withBundleAnalyser = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYSE === 'true',
 });
 
-// TODO minify twgl
-
 /** @type {import('next').NextConfig} */
 const nextConfig = withBundleAnalyser({
   experimental: {
