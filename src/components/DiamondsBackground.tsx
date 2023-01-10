@@ -42,7 +42,6 @@ export default function DiamondsBackground() {
     const realMousePos = useRef<[x: number, y: number]>([-9, -9]);
     const mouseEventListener = useRef<((e: MouseEvent) => void) | undefined>();
     const uniforms = useRef<Uniforms>();
-    const lastTime = useRef(0);
     const windowSize = useWindowSize();
     const arraysData = useRef<ArraysData>({
         arrays: {},
@@ -125,11 +124,8 @@ export default function DiamondsBackground() {
             // Update the event listeners
             window.addEventListener('mousemove', mouseEventListener.current);
 
-            const renderCb: RenderCb = (deltaTime) => {
+            const renderCb: RenderCb = (deltaTime, time) => {
                 if (!isCanvasVisible.current) return uniforms.current ?? {};
-
-                const frameTime = deltaTime - lastTime.current;
-                lastTime.current = deltaTime;
 
                 const dpi = getDpi();
                 const baseS = BASE_RADIUS_SCALE;
@@ -152,15 +148,17 @@ export default function DiamondsBackground() {
                 ];
 
                 // Distance to move the point this frame
-                const dist = frameTime / 3000;
+                const dist = deltaTime / 4000;
                 for (let i = 0; i < noiseFunctions.length; i++) {
                     const j = 2 * i;
                     const theta =
-                        noiseFunctions[i + 0](
+                        (noiseFunctions[i + 0](
                             noisePoints.current[j + 0],
                             noisePoints.current[j + 1],
-                            (deltaTime + 10_000) / 10_000
-                        ) * Math.PI;
+                            (time + 10_000) / 10_000
+                        ) *
+                            Math.PI) %
+                        (2 * Math.PI);
                     noisePoints.current[j + 0] += dist * Math.cos(theta); // x-coordinate
                     noisePoints.current[j + 1] += dist * Math.sin(theta); // y-coordinate
                     // Keep points in the frame

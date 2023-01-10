@@ -23,7 +23,7 @@ export type CanvasCbProps = {
     isCanvasVisible: MutableRefObject<boolean>;
 };
 
-export type RenderCb = (deltaTime: number) => Uniforms;
+export type RenderCb = (deltaTime: number, time: number) => Uniforms;
 
 export type ArraysData = {
     arrays: Arrays;
@@ -68,6 +68,8 @@ export default function Canvas(props: CanvasProps) {
     const programInfo = useRef<ProgramInfo>();
     const renderCallbacks = useRef<RenderCallbacks>();
     const isCanvasVisible = useRef(true);
+    const animFrameHandle = useRef<number>();
+    const lastTime = useRef(0);
 
     // Create program and buffer info
     useEffect(() => {
@@ -96,7 +98,7 @@ export default function Canvas(props: CanvasProps) {
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
 
         // Render loop calls render cb and requests new frame at end of current frame
-        const render = (deltaTime: number) => {
+        const render = (time: number) => {
             // Update buffer info if arrays have changed
             if (arraysData.current.changed) {
                 arraysData.current.changed = false;
@@ -113,7 +115,9 @@ export default function Canvas(props: CanvasProps) {
             gl.clearColor(0, 0, 0, 0);
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-            const uniforms = renderCb(deltaTime);
+            const deltaTime = time - lastTime.current;
+            lastTime.current = time;
+            const uniforms = renderCb(deltaTime, time);
 
             if (programInfo.current !== undefined && bufferInfo.current !== undefined) {
                 gl.useProgram(programInfo.current.program);
@@ -123,23 +127,25 @@ export default function Canvas(props: CanvasProps) {
             }
 
             // Request the next frame if canvas is visible
-            if (isCanvasVisible.current) requestAnimationFrame(render);
+            if (isCanvasVisible.current) animFrameHandle.current = requestAnimationFrame(render);
         };
         // Begin render loop
-        requestAnimationFrame(render);
+        animFrameHandle.current = requestAnimationFrame(render);
 
         // Only render while canvas on screen
         const observer = new IntersectionObserver((entries) => {
             const [entry] = entries;
             isCanvasVisible.current = entry.isIntersecting;
             // Last state was invisible, so manually trigger a frame to restart the frameloop
-            if (entry.isIntersecting) requestAnimationFrame(render);
+            if (entry.isIntersecting) animFrameHandle.current = requestAnimationFrame(render);
         });
         observer.observe(gl.canvas as HTMLCanvasElement);
 
         // Cleanup
         return () => {
             observer.disconnect();
+            if (animFrameHandle.current !== undefined)
+                cancelAnimationFrame(animFrameHandle.current);
         };
     }, [canvasSize, gl]);
 
