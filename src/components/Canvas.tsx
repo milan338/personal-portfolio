@@ -1,6 +1,7 @@
 'use client';
 
 import { useResizeObserver } from 'hooks/dom';
+import { usePreferseReducedMotion } from 'hooks/media';
 import { useEffect, useRef, useState } from 'react';
 import {
     createProgramInfo,
@@ -41,6 +42,7 @@ type CanvasProps = {
     cb: (props: CanvasCbProps) => RenderCallbacks;
     vertexShader?: string;
     fragmentShader?: string;
+    reduceMotionOnPrefer?: boolean;
     children?: JSX.Element;
 };
 
@@ -60,9 +62,10 @@ function resizeCanvasToDisplaySize(width: number, height: number, canvas: HTMLCa
 }
 
 export default function Canvas(props: CanvasProps) {
-    const { cb, vertexShader, fragmentShader, children } = props;
+    const { cb, vertexShader, fragmentShader, reduceMotionOnPrefer, children } = props;
     const [gl, setGl] = useState<WebGLRenderingContext | null>(null);
     const [canvasSize, observeCanvasSize] = useResizeObserver();
+    const prefersReducedMotion = usePreferseReducedMotion();
     const shaders = useRef<{ vert: string; frag: string }>({ vert: '', frag: '' });
     const bufferInfo = useRef<BufferInfo>();
     const programInfo = useRef<ProgramInfo>();
@@ -119,7 +122,13 @@ export default function Canvas(props: CanvasProps) {
             lastTime.current = time;
             const uniforms = renderCb(deltaTime, time);
 
-            if (programInfo.current !== undefined && bufferInfo.current !== undefined) {
+            const reduceMotion = prefersReducedMotion.current && reduceMotionOnPrefer === true;
+
+            if (
+                !reduceMotion &&
+                programInfo.current !== undefined &&
+                bufferInfo.current !== undefined
+            ) {
                 gl.useProgram(programInfo.current.program);
                 setBuffersAndAttributes(gl, programInfo.current, bufferInfo.current);
                 setUniforms(programInfo.current, uniforms);
@@ -147,7 +156,7 @@ export default function Canvas(props: CanvasProps) {
             if (animFrameHandle.current !== undefined)
                 cancelAnimationFrame(animFrameHandle.current);
         };
-    }, [canvasSize, gl]);
+    }, [canvasSize, gl, prefersReducedMotion, reduceMotionOnPrefer]);
 
     // Run once on component mount, and once on unmount (with null)
     const withCanvas = (canvas: HTMLCanvasElement | null) => {

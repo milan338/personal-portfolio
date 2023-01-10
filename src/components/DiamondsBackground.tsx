@@ -192,6 +192,7 @@ export default function DiamondsBackground() {
                     cb={canvasCb}
                     vertexShader={vert.sourceCode}
                     fragmentShader={frag.sourceCode}
+                    reduceMotionOnPrefer
                 />
             </div>
             <style jsx>{`
