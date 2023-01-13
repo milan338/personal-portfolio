@@ -1,7 +1,7 @@
 'use client';
 
 import { useResizeObserver } from 'hooks/dom';
-import { usePreferseReducedMotion } from 'hooks/media';
+import { usePrefersReducedMotion } from 'hooks/media';
 import { useEffect, useRef, useState } from 'react';
 import {
     createProgramInfo,
@@ -11,6 +11,7 @@ import {
     setBuffersAndAttributes,
     setUniforms,
 } from 'twgl.js';
+import { withIntersectionObserver } from 'utils/dom';
 import { getDpi } from 'utils/window';
 import type { Size } from 'hooks/dom';
 import type { MutableRefObject } from 'react';
@@ -65,7 +66,7 @@ export default function Canvas(props: CanvasProps) {
     const { cb, vertexShader, fragmentShader, reduceMotionOnPrefer, children } = props;
     const [gl, setGl] = useState<WebGLRenderingContext | null>(null);
     const [canvasSize, observeCanvasSize] = useResizeObserver();
-    const prefersReducedMotion = usePreferseReducedMotion();
+    const prefersReducedMotion = usePrefersReducedMotion();
     const shaders = useRef<{ vert: string; frag: string }>({ vert: '', frag: '' });
     const bufferInfo = useRef<BufferInfo>();
     const programInfo = useRef<ProgramInfo>();
@@ -142,13 +143,11 @@ export default function Canvas(props: CanvasProps) {
         animFrameHandle.current = requestAnimationFrame(render);
 
         // Only render while canvas on screen
-        const observer = new IntersectionObserver((entries) => {
-            const [entry] = entries;
-            isCanvasVisible.current = entry.isIntersecting;
+        const observer = withIntersectionObserver(({ isIntersecting }) => {
+            isCanvasVisible.current = isIntersecting;
             // Last state was invisible, so manually trigger a frame to restart the frameloop
-            if (entry.isIntersecting) animFrameHandle.current = requestAnimationFrame(render);
-        });
-        observer.observe(gl.canvas as HTMLCanvasElement);
+            if (isIntersecting) animFrameHandle.current = requestAnimationFrame(render);
+        }, gl.canvas as HTMLCanvasElement);
 
         // Cleanup
         return () => {
