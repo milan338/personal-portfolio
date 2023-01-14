@@ -5,7 +5,7 @@
   "scripts": {
     "setup": "npm install && patch-package",
     "dev": "next dev",
-    "build": "tsec --noEmit && next build",
+    "build": "tsec --noEmit && npm run stylelint && next build",
     "analyse": "cross-env ANALYSE=true next build",
     "start": "next start",
     "lint": "next lint",
