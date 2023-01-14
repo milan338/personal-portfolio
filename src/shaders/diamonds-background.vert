@@ -13,10 +13,18 @@ uniform float u_radiusScale;
 uniform float u_maxScale;
 
 /**
- * Get the scale for the diamond size based on contributions from a given point
- * @param realCentroid Diamond centroid scaled to the window dimensinos
- * @param point Point from which to calculate the distance to, e.g. mouse position
- * @param cursor Is the point from the cursor
+ * Get the scale for the diamond based on the distance of a point from the centroid.
+ * @param len The length of the vector between the centroid and the point.
+ */
+float getScale(float len) {
+    return max(u_maxScale, min(1.0, len));
+}
+
+/**
+ * Get the scale for the diamond size based on contributions from a given point.
+ * @param realCentroid Diamond centroid scaled to the window dimensinos.
+ * @param point Point from which to calculate the distance to, e.g. mouse position.
+ * @param cursor Is the point from the cursor.
  */
 float getDiamondScale(vec2 realCentroid, vec2 point, bool isCursor) {
     // Screen resolution scaled by the device pixel ratio
@@ -30,7 +38,8 @@ float getDiamondScale(vec2 realCentroid, vec2 point, bool isCursor) {
 
     // Don't wrap - just return the scale without wrapping contributions
     // Also use a smaller radius scale
-    if (isCursor) return min(u_maxScale, length(diff) * u_radiusScale * 2.0);
+    // if (isCursor) return min(u_maxScale, length(diff) * u_radiusScale * 2.0);
+    if (isCursor) return getScale(length(diff) * u_radiusScale * 2.0);
 
     // Since the points wrap around the screen, must also find the wrapped distance
     // Wrapping occurs both horizontally and vertically across all 4 screen edges
@@ -42,7 +51,8 @@ float getDiamondScale(vec2 realCentroid, vec2 point, bool isCursor) {
     float dist = sqrt((distHorizontal * distHorizontal) + (distVertical * distVertical));
 
     // Scale the distance between the centroid and vertex - don't scale above 1
-    return min(u_maxScale, dist * u_radiusScale);
+    // return min(u_maxScale, dist * u_radiusScale);
+    return getScale(dist * u_radiusScale);
 }
 
 void main() {
@@ -57,6 +67,8 @@ void main() {
     for (int i = 0; i < N_POINTS; ++i) {
         scale = min(scale, getDiamondScale(realCentroid, u_movingPoints[i], false));
     }
+
+    // scale = 1.7;
 
     // Final vertex position is just the original vector from the centroid but scaled
     gl_Position = a_position - (diff * scale);

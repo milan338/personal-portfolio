@@ -1,10 +1,12 @@
 'use client';
 
+import { useScrollAmount } from 'hooks/dom';
 import { useWindowSize } from 'hooks/window';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import frag from 'shaders/diamonds-background.frag';
 import vert from 'shaders/diamonds-background.vert';
 import { createNoise3D } from 'simplex-noise';
+import { makeDiamondVerts } from 'utils/math';
 import { getDpi } from 'utils/window';
 import Canvas from './Canvas';
 import type { RenderCb, CanvasCbProps, Uniforms, ArraysData } from './Canvas';
@@ -12,35 +14,13 @@ import type { RenderCb, CanvasCbProps, Uniforms, ArraysData } from './Canvas';
 const BASE_RADIUS_SCALE = 0.001_12;
 const BASE_WINDOW_WIDTH = 1920;
 const BASE_OPACITY = 0.02;
-const BASE_MAX_SCALE = 1;
-
-/**
- * Create vertices and centroid attributes for a diamond
- * @param b Bottom coordinate
- * @param l Left cooordinate
- * @param w Diamond width
- * @param h Diamond height
- * @returns The flat diamond vertices array and flat centroid vertex attributes array
- */
-function makeDiamondVerts(
-    b: number,
-    l: number,
-    w: number,
-    h: number
-): [vertices: number[], centroids: number[]] {
-    // Triangle vertices
-    const t1 = [l, b + h / 2, l + w / 2, b + h, l + w, b + h / 2];
-    const t2 = [l, b + h / 2, l + w / 2, b, l + w, b + h / 2];
-    // Diamond centroids
-    const [cX, cY] = [l + w / 2, b + h / 2];
-
-    return [[...t1, ...t2], Array.from({ length: t1.length * 2 }, (el, i) => (i % 2 ? cY : cX))];
-}
+const BASE_MAX_SCALE = 0;
 
 export default function DiamondsBackground() {
     const mousePos = useRef<[x: number, y: number]>([-9, -9]);
     const realMousePos = useRef<[x: number, y: number]>([-9, -9]);
     const mouseEventListener = useRef<((e: MouseEvent) => void) | undefined>();
+    const scrollAmount = useScrollAmount('#main-content', 1000);
     const uniforms = useRef<Uniforms>();
     const windowSize = useWindowSize();
     const arraysData = useRef<ArraysData>({
@@ -136,16 +116,20 @@ export default function DiamondsBackground() {
                 const w = windowSize.current.width;
                 const radScale = baseS / (Math.min(w * dpi * 1.8, baseW * dpi) / (baseW * dpi));
 
+                const { width, height } = gl.canvas;
+
+                const scroll = Math.max(scrollAmount.current - 10, 0);
+                // As the scale approaches 1, the diamond size shrinks to nothing
+                // As the scale deviates from 1, the diamond size increases to its original size
+                const maxScale = Math.min(1, BASE_MAX_SCALE + scroll / (height * 1.2));
+
                 uniforms.current[frag.uniforms.u_color.variableName] = [0, 0, 0, 1];
                 uniforms.current[frag.uniforms.u_opacity.variableName] = BASE_OPACITY;
                 uniforms.current[vert.uniforms.u_cursorPos.variableName] = mousePos.current;
                 uniforms.current[vert.uniforms.u_pixelRatio.variableName] = dpi;
-                uniforms.current[vert.uniforms.u_maxScale.variableName] = BASE_MAX_SCALE;
+                uniforms.current[vert.uniforms.u_maxScale.variableName] = maxScale;
                 uniforms.current[vert.uniforms.u_radiusScale.variableName] = radScale;
-                uniforms.current[vert.uniforms.u_resolution.variableName] = [
-                    gl.canvas.width,
-                    gl.canvas.height,
-                ];
+                uniforms.current[vert.uniforms.u_resolution.variableName] = [width, height];
 
                 // Distance to move the point this frame
                 const dist = deltaTime / 4000;
@@ -159,6 +143,10 @@ export default function DiamondsBackground() {
                         ) *
                             Math.PI) %
                         (2 * Math.PI);
+                    // These are points that move around the screen randomly but coherently w.r.t.
+                    // Their previous positions, giving the illusion of wandering points on screen,
+                    // Acting as the centres of circles that affect the diamonds through the shader,
+                    // Just as with the mouse cursor
                     noisePoints.current[j + 0] += dist * Math.cos(theta); // x-coordinate
                     noisePoints.current[j + 1] += dist * Math.sin(theta); // y-coordinate
                     // Keep points in the frame
@@ -175,7 +163,7 @@ export default function DiamondsBackground() {
 
             return { renderCb, arraysData };
         },
-        [noiseFunctions, updateArrays, windowSize]
+        [noiseFunctions, scrollAmount, updateArrays, windowSize]
     );
 
     useEffect(() => {
@@ -186,7 +174,7 @@ export default function DiamondsBackground() {
     }, []);
 
     return (
-        <div className="bg-white">
+        <div className="fixed w-full h-screen bg-white">
             <div className="diamonds-background">
                 <Canvas
                     cb={canvasCb}
@@ -207,7 +195,7 @@ export default function DiamondsBackground() {
                 }
 
                 .diamonds-background {
-                    animation: fade-in 1s ease forwards;
+                    animation: fade-in 2s ease-out forwards;
                     opacity: 0;
                 }
             `}</style>
