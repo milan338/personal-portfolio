@@ -11,8 +11,7 @@ import {
     setBuffersAndAttributes,
     setUniforms,
 } from 'twgl.js';
-import { withIntersectionObserver } from 'utils/dom';
-import { getDpi } from 'utils/window';
+import { resizeCanvasToDisplaySize, withIntersectionObserver } from 'utils/dom';
 import type { Size } from 'hooks/dom';
 import type { MutableRefObject } from 'react';
 import type { ProgramInfo, BufferInfo, Arrays } from 'twgl.js';
@@ -48,19 +47,6 @@ type CanvasProps = {
 };
 
 setDefaults({ attribPrefix: 'a_' });
-
-/**
- * Resize canvas to match its real size and factor in the device pixel ratio.
- * @param canvas The canvas to resize.
- * @see https://github.com/greggman/twgl.js/blob/master/src/twgl.js
- */
-function resizeCanvasToDisplaySize(width: number, height: number, canvas: HTMLCanvasElement) {
-    const dpi = getDpi();
-    const [newWidth, newHeight] = [width * dpi, height * dpi];
-    if (canvas.width === newWidth && canvas.height === newHeight) return;
-    canvas.width = newWidth;
-    canvas.height = newHeight;
-}
 
 export default function Canvas(props: CanvasProps) {
     const { cb, vertexShader, fragmentShader, reduceMotionOnPrefer, children } = props;

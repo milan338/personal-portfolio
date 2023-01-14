@@ -1,3 +1,5 @@
+import { getDpi } from './window';
+
 type ResizeObserverCb = (size: { width: number; height: number }) => void;
 type IntersectionObserverCb = (entry: IntersectionObserverEntry) => void;
 
@@ -36,4 +38,21 @@ export function withIntersectionObserver(
     }, options);
     if (node !== null) observer.observe(node);
     return observer;
+}
+
+/**
+ * Resize canvas to match its real size and factor in the device pixel ratio.
+ * @param canvas The canvas to resize.
+ * @see https://github.com/greggman/twgl.js/blob/master/src/twgl.js
+ */
+export function resizeCanvasToDisplaySize(
+    width: number,
+    height: number,
+    canvas: HTMLCanvasElement
+) {
+    const dpi = getDpi();
+    const [newWidth, newHeight] = [width * dpi, height * dpi];
+    if (canvas.width === newWidth && canvas.height === newHeight) return;
+    canvas.width = newWidth;
+    canvas.height = newHeight;
 }
