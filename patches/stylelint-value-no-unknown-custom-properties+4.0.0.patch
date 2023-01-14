@@ -1,0 +1,27 @@
+diff --git a/node_modules/stylelint-value-no-unknown-custom-properties/dist/index.cjs b/node_modules/stylelint-value-no-unknown-custom-properties/dist/index.cjs
+index 52f60ec..42b9c94 100644
+--- a/node_modules/stylelint-value-no-unknown-custom-properties/dist/index.cjs
++++ b/node_modules/stylelint-value-no-unknown-custom-properties/dist/index.cjs
+@@ -121,7 +121,8 @@ async function getCustomPropertiesFromCSSFile(from, resolver) {
+
+
+ function getCustomPropertiesFromObject(object) {
+-  const customProperties = Object.assign({}, Object(object).customProperties, Object(object)['custom-properties']);
++//   const customProperties = Object.assign({}, Object(object).customProperties, Object(object)['custom-properties']);
++  const customProperties = Object.assign({}, Object(object).customProperties, Object(object));
+   return customProperties;
+ }
+ /* Get Custom Properties from JSON file
+@@ -157,9 +158,9 @@ function getCustomPropertiesFromSources(sources, resolver) {
+       from: String(source)
+     }; // skip objects with Custom Properties
+
+-    if (opts.customProperties || opts['custom-properties']) {
+-      return opts;
+-    } // source pathname
++    // if (opts.customProperties || opts['custom-properties']) {
++    //   return opts;
++    // } // source pathname
+
+
+     const from = path__default["default"].resolve(String(opts.from || '')); // type of file being read from

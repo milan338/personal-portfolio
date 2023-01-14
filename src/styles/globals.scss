@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html {
+        background: white;
+        font-family: var(--font-poppins), sans-serif;
+    }
+
+    a {
+        text-decoration: none;
+    }
+}
