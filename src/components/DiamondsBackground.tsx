@@ -166,7 +166,7 @@ export default function DiamondsBackground() {
 
     return (
         <div className="fixed w-full h-screen bg-neutral-100">
-            <div className="diamonds-background">
+            <div className="fade-in">
                 <Canvas
                     cb={canvasCb}
                     vertexShader={vert.sourceCode}
@@ -174,22 +174,6 @@ export default function DiamondsBackground() {
                     reduceMotionOnPrefer
                 />
             </div>
-            <style jsx>{`
-                @keyframes fade-in {
-                    0% {
-                        opacity: 0;
-                    }
-
-                    100% {
-                        opacity: 1;
-                    }
-                }
-
-                .diamonds-background {
-                    animation: fade-in 2s ease-out forwards;
-                    opacity: 0;
-                }
-            `}</style>
         </div>
     );
 }

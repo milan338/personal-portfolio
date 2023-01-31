@@ -1,3 +1,5 @@
+@use 'animations.scss';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,5 +12,16 @@
 
     a {
         text-decoration: none;
+    }
+}
+
+@layer components {
+    .glass-bg {
+        @apply bg-clip-padding backdrop-filter backdrop-blur-sm;
+    }
+
+    .fade-in {
+        animation: fade-in 2s ease-out forwards;
+        @apply opacity-0;
     }
 }
