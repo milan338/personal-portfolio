@@ -152,7 +152,7 @@ export default function Canvas(props: CanvasProps) {
 
     return (
         <>
-            <canvas ref={withCanvas} className="block w-full h-screen" />
+            <canvas ref={withCanvas} className="block h-screen w-full" />
             {children}
         </>
     );

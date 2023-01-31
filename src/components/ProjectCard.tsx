@@ -11,9 +11,9 @@ export default function ProjectCard(props: ProjectCardProps) {
     const { label, description, url, children } = props;
     return (
         <a
-            className="glass-bg z-20 flex cursor-pointer flex-col rounded-xl border-2 border-solid
-            border-neutral-200 border-opacity-30 bg-white bg-opacity-20 p-4 shadow-md transition-transform
-            hover:-translate-y-1"
+            className="glass-bg z-20 flex transform-gpu cursor-pointer flex-col rounded-xl border-2
+            border-solid border-neutral-200 border-opacity-30 bg-white bg-opacity-20 p-4 shadow-lg
+            transition-transform hover:-translate-y-1"
             href={url}
             target="_blank"
             rel="noreferrer"
