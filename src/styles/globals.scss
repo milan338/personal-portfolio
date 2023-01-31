@@ -17,7 +17,7 @@
 
 @layer components {
     .glass-bg {
-        @apply bg-clip-padding backdrop-filter backdrop-blur-sm;
+        @apply bg-clip-padding backdrop-blur-sm backdrop-filter;
     }
 
     .fade-in {
