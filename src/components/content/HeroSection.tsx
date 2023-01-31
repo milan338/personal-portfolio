@@ -28,7 +28,13 @@ export default function HeroSection() {
                         const Icon = ICONS.get(icon);
                         if (Icon === undefined) throw new Error(`Link ${icon} is not a valid link`);
                         return (
-                            <a key={label} href={url} target="_blank" rel="noreferrer">
+                            <a
+                                key={label}
+                                href={url}
+                                target="_blank"
+                                rel="noreferrer"
+                                aria-label={label}
+                            >
                                 <Icon className="h-9 w-9 text-slate-800 opacity-70 transition-opacity hover:opacity-100" />
                             </a>
                         );
