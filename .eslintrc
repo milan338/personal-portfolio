@@ -288,6 +288,7 @@
       "rules": {
         "@typescript-eslint/naming-convention": [
           "error",
+          { "selector": "variable", "format": ["camelCase", "PascalCase"] },
           { "selector": "variableLike", "format": ["camelCase"] },
           {
             "selector": "memberLike",

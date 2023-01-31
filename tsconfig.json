@@ -22,7 +22,10 @@
         "name": "tsec"
       }
     ],
-    "baseUrl": "./src"
+    "baseUrl": "./src",
+    "paths": {
+      "@content/*": ["../portfolio-content/*"]
+    }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
