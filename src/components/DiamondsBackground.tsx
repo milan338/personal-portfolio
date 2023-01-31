@@ -1,6 +1,5 @@
 'use client';
 
-import { useScrollAmount } from 'hooks/dom';
 import { useWindowSize } from 'hooks/window';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import frag from 'shaders/diamonds-background.frag';
@@ -14,13 +13,11 @@ import type { RenderCb, CanvasCbProps, Uniforms, ArraysData } from './Canvas';
 const BASE_RADIUS_SCALE = 0.001_12;
 const BASE_WINDOW_WIDTH = 1920;
 const BASE_OPACITY = 0.02;
-const BASE_MAX_SCALE = 0;
 
 export default function DiamondsBackground() {
     const mousePos = useRef<[x: number, y: number]>([-9, -9]);
     const realMousePos = useRef<[x: number, y: number]>([-9, -9]);
     const mouseEventListener = useRef<((e: MouseEvent) => void) | undefined>();
-    const scrollAmount = useScrollAmount('#main-content', 1000);
     const uniforms = useRef<Uniforms>();
     const windowSize = useWindowSize();
     const arraysData = useRef<ArraysData>({
@@ -118,16 +115,10 @@ export default function DiamondsBackground() {
 
                 const { width, height } = gl.canvas;
 
-                const scroll = Math.max(scrollAmount.current - 10, 0);
-                // As the scale approaches 1, the diamond size shrinks to nothing
-                // As the scale deviates from 1, the diamond size increases to its original size
-                const maxScale = Math.min(1, BASE_MAX_SCALE + scroll / (height * 1.2));
-
                 uniforms.current[frag.uniforms.u_color.variableName] = [0, 0, 0, 1];
                 uniforms.current[frag.uniforms.u_opacity.variableName] = BASE_OPACITY;
                 uniforms.current[vert.uniforms.u_cursorPos.variableName] = mousePos.current;
                 uniforms.current[vert.uniforms.u_pixelRatio.variableName] = dpi;
-                uniforms.current[vert.uniforms.u_maxScale.variableName] = maxScale;
                 uniforms.current[vert.uniforms.u_radiusScale.variableName] = radScale;
                 uniforms.current[vert.uniforms.u_resolution.variableName] = [width, height];
 
@@ -163,7 +154,7 @@ export default function DiamondsBackground() {
 
             return { renderCb, arraysData };
         },
-        [noiseFunctions, scrollAmount, updateArrays, windowSize]
+        [noiseFunctions, updateArrays, windowSize]
     );
 
     useEffect(() => {
@@ -174,7 +165,7 @@ export default function DiamondsBackground() {
     }, []);
 
     return (
-        <div className="fixed w-full h-screen bg-white">
+        <div className="fixed w-full h-screen bg-neutral-100">
             <div className="diamonds-background">
                 <Canvas
                     cb={canvasCb}
