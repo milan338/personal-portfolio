@@ -13,6 +13,7 @@ uniform float u_radiusScale;
 
 /**
  * Get the scale for the diamond size based on contributions from a given point.
+ *
  * @param realCentroid Diamond centroid scaled to the window dimensinos.
  * @param point Point from which to calculate the distance to, e.g. mouse position.
  * @param cursor Is the point from the cursor.

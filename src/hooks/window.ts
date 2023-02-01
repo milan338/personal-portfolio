@@ -2,9 +2,9 @@ import { useEffect, useRef } from 'react';
 import { withResizeObserver } from 'utils/dom';
 
 /**
- * Custom React hook to get the current window size.
- * Does not cause component rerenders, so must be used outside of React, e.g.
- * In event listeners and animation frames.
+ * Custom React hook to get the current window size. Does not cause component rerenders, so must be
+ * used outside of React, e.g. In event listeners and animation frames.
+ *
  * @returns The current window dimensions.
  */
 export function useWindowSize() {

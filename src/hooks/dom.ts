@@ -7,8 +7,9 @@ export type Size = { width: number; height: number };
 type ResizeObserverCb = (entry: Size) => void;
 
 /**
- * Custom React hook to get the current size of a DOM element.
- * Stores the size in a ref so doesn't cause component rerenders.
+ * Custom React hook to get the current size of a DOM element. Stores the size in a ref so doesn't
+ * cause component rerenders.
+ *
  * @returns The current element size, and a callback to set the element to observe.
  */
 export function useResizeObserver(

@@ -1,5 +1,6 @@
 /**
  * Get the current window's device pixel ratio
+ *
  * @returns The window's device pixel ratio
  */
 export function getDpi() {

@@ -1,5 +1,6 @@
 /**
  * Create vertices and centroid attributes for a diamond
+ *
  * @param b Bottom coordinate
  * @param l Left cooordinate
  * @param w Diamond width
