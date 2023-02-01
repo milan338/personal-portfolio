@@ -13,10 +13,10 @@ import type { RenderCb, CanvasCbProps, Uniforms, ArraysData } from './Canvas';
 const BASE_RADIUS_SCALE = 0.001_12;
 const BASE_WINDOW_WIDTH = 1920;
 const BASE_OPACITY = 0.02;
+const BASE_COLOR = [0, 0, 0, 1];
 
 export default function DiamondsBackground() {
     const mousePos = useRef<[x: number, y: number]>([-9, -9]);
-    const realMousePos = useRef<[x: number, y: number]>([-9, -9]);
     const mouseEventListener = useRef<((e: MouseEvent) => void) | undefined>();
     const uniforms = useRef<Uniforms>();
     const windowSize = useWindowSize();
@@ -94,8 +94,6 @@ export default function DiamondsBackground() {
                     -(canvasCentre[0] - event.x) / (width / 2),
                     (canvasCentre[1] - event.y) / (height / 2) - 1,
                 ];
-                // Update the actual mouse coordinates for use in the scroll listener
-                realMousePos.current = [event.x, event.y];
             };
 
             // Update the event listeners
@@ -115,7 +113,7 @@ export default function DiamondsBackground() {
 
                 const { width, height } = gl.canvas;
 
-                uniforms.current[frag.uniforms.u_color.variableName] = [0, 0, 0, 1];
+                uniforms.current[frag.uniforms.u_color.variableName] = BASE_COLOR;
                 uniforms.current[frag.uniforms.u_opacity.variableName] = BASE_OPACITY;
                 uniforms.current[vert.uniforms.u_cursorPos.variableName] = mousePos.current;
                 uniforms.current[vert.uniforms.u_pixelRatio.variableName] = dpi;
