@@ -1,4 +1,0 @@
-{
-  "buildCommand": "vercel-submodules --al && npm run setup && npm run build",
-  "framework": "nextjs"
-}
