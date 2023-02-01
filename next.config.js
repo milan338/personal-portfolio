@@ -6,7 +6,7 @@ const ContentSecurityPolicy = `
   default-src 'self';
   base-uri 'none';
   img-src 'self';
-  style-src 'self';
+  style-src 'self' 'unsafe-inline';
   script-src 'self' 'unsafe-eval' 'unsafe-inline';
   object-src 'none';
   script-src-attr 'none';
@@ -63,7 +63,7 @@ const securityHeaders = [
   },
   {
     key: 'Permissions-Policy',
-    value: `camera=(), display-capture(), microphone=(), geolocation=(),
+    value: `camera=(), display-capture=(), microphone=(), geolocation=(),
     browsing-topics=(), serial=(), usb=(), payment=(), publickey-credentials-get=(),
     execution-while-out-of-viewport=(), execution-while-not-rendered=()`.replace(/\n/gu, ''),
   },
