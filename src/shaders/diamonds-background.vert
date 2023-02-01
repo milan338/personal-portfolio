@@ -14,9 +14,9 @@ uniform float u_radiusScale;
 /**
  * Get the scale for the diamond size based on contributions from a given point.
  *
- * @param realCentroid Diamond centroid scaled to the window dimensinos.
+ * @param realCentroid Diamond centroid scaled to the window dimensions.
  * @param point Point from which to calculate the distance to, e.g. mouse position.
- * @param cursor Is the point from the cursor.
+ * @param cursor Is the point from the cursor?
  */
 float getDiamondScale(vec2 realCentroid, vec2 point, bool isCursor) {
     // Screen resolution scaled by the device pixel ratio

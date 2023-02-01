@@ -1,11 +1,11 @@
 /**
- * Create vertices and centroid attributes for a diamond
+ * Create vertices and centroid attributes for a diamond.
  *
- * @param b Bottom coordinate
- * @param l Left cooordinate
- * @param w Diamond width
- * @param h Diamond height
- * @returns The flat diamond vertices array and flat centroid vertex attributes array
+ * @param b Bottom coordinate.
+ * @param l Left cooordinate.
+ * @param w Diamond width.
+ * @param h Diamond height.
+ * @returns The flat diamond vertices array and flat centroid vertex attributes array.
  */
 export function makeDiamondVerts(
     b: number,

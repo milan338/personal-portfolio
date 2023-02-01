@@ -2,7 +2,9 @@ const withBundleAnalyser = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYSE === 'true',
 });
 
-/** @type {import('next').NextConfig} */
+/**
+ * @type {import('next').NextConfig}
+ */
 const nextConfig = withBundleAnalyser({
   experimental: {
     appDir: true,
