@@ -30,7 +30,8 @@
         "*.config.{js,ts}",
         "*rc",
         "*rc.{js,ts}",
-        ".clang-format"
+        ".clang-format",
+        "site.webmanifest"
       ],
       "options": {
         "tabWidth": 2
