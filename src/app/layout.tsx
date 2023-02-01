@@ -22,6 +22,8 @@ export default function RootLayout(props: RootLayoutProps) {
                     <DiamondsBackground />
                     <MainContent>{children}</MainContent>
                 </main>
+
+                <footer className="h-20" />
             </body>
         </html>
     );
