@@ -5,6 +5,7 @@ import aboutContent from '@content/about.content.json';
 import HeroSection from './HeroSection';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Fragment } from 'react';
 import type { ReactNode } from 'react';
 
 type MainContentProps = {
@@ -25,9 +26,8 @@ export default function MainContent(props: MainContentProps) {
         const active = href === path || (path === '/' && href === '/projects');
 
         return (
-            <>
+            <Fragment key={href}>
                 <Link
-                    key={href}
                     className={`text-4xl font-medium motion-safe:transition-opacity ${
                         active ? 'opacity-100' : 'opacity-[0.45] hover:opacity-60'
                     }`}
@@ -40,7 +40,7 @@ export default function MainContent(props: MainContentProps) {
                 {i < sections.length - 1 && (
                     <div key={`${href}-separator`} className="h-full w-1 bg-black opacity-10" />
                 )}
-            </>
+            </Fragment>
         );
     });
 
