@@ -13,7 +13,7 @@ export default function ProjectCard(props: ProjectCardProps) {
         <a
             className="glass-bg z-20 flex transform-gpu cursor-pointer flex-col rounded-xl border-4
             border-solid border-neutral-200 border-opacity-30 bg-white bg-opacity-20 p-4 shadow-lg
-            transition-transform hover:-translate-y-1"
+            hover:-translate-y-1 motion-safe:transition-transform"
             href={url}
             target="_blank"
             rel="noreferrer"

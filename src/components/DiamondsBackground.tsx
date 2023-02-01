@@ -165,8 +165,8 @@ export default function DiamondsBackground() {
     }, []);
 
     return (
-        <div className="fixed h-screen w-full bg-neutral-100">
-            <div className="fade-in">
+        <div className="fixed h-screen w-full bg-transparent">
+            <div className="fade-in duration-3000 delay-300 ease-out fill-mode-both motion-safe:animate-in">
                 <Canvas
                     cb={canvasCb}
                     vertexShader={vert.sourceCode}

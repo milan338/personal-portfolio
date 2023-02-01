@@ -35,7 +35,10 @@ export default function HeroSection() {
                                 rel="noreferrer"
                                 aria-label={label}
                             >
-                                <Icon className="h-9 w-9 text-slate-800 opacity-70 transition-opacity hover:opacity-100" />
+                                <Icon
+                                    className="h-9 w-9 text-slate-800 opacity-70 hover:opacity-100
+                                    motion-safe:transition-opacity"
+                                />
                             </a>
                         );
                     })}
