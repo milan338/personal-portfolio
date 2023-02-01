@@ -44,7 +44,9 @@ export default function MainContent(props: MainContentProps) {
             className="relative z-10 flex h-auto w-[min(80vw,_48rem)] flex-col items-center"
         >
             <HeroSection />
-            <div className="flex w-full flex-row justify-start gap-9 pt-14">{links}</div>
+            <div className="flex w-full flex-col justify-start gap-9 pt-14 sm:flex-row">
+                {links}
+            </div>
             {children}
         </section>
     );
