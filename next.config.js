@@ -65,7 +65,7 @@ const securityHeaders = [
     key: 'Permissions-Policy',
     value: `camera=(), display-capture(), microphone=(), geolocation=(),
     browsing-topics=(), serial=(), usb=(), payment=(), publickey-credentials-get=(),
-    execution-while-out-of-viewport=(), execution-while-not-rendered=()`,
+    execution-while-out-of-viewport=(), execution-while-not-rendered=()`.replace(/\n/gu, ''),
   },
 ];
 
