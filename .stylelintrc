@@ -30,7 +30,10 @@
         "plugin/stylelint-group-selectors": true,
         "plugin/no-unsupported-browser-features": true,
         "plugin/no-low-performance-animation-properties": true,
-        "csstools/value-no-unknown-custom-properties": null
+        "csstools/value-no-unknown-custom-properties": [
+          true,
+          { "importFrom": ["src/styles/fonts.json"] }
+        ]
       }
     },
     {

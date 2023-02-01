@@ -38,7 +38,10 @@ export default function MainContent(props: MainContentProps) {
                     {heading}
                 </Link>
                 {i < sections.length - 1 && (
-                    <div key={`${href}-separator`} className="h-full w-1 bg-black opacity-10" />
+                    <div
+                        key={`${href}-separator`}
+                        className="hidden h-full w-1 bg-black opacity-10 sm:flex"
+                    />
                 )}
             </Fragment>
         );
@@ -50,7 +53,7 @@ export default function MainContent(props: MainContentProps) {
             className="relative z-10 flex h-auto w-[min(80vw,_48rem)] flex-col items-center"
         >
             <HeroSection />
-            <div className="flex w-full flex-col justify-start gap-8 pt-12 sm:flex-row">
+            <div className="flex w-full flex-col justify-start gap-4 pt-12 sm:flex-row sm:gap-8">
                 {links}
             </div>
             {children}
