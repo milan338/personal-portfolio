@@ -34,7 +34,7 @@ export default function HeroSection() {
         <section className="items-left w-full pt-14">
             <h1 className="mx-[-6px] text-8xl font-medium">{heading}</h1>
             <h2 className="text-2xl font-normal">{subheadingText}</h2>
-            <div className="items-left flex flex-col gap-6 pt-7 text-center sm:flex-row sm:items-center">
+            <div className="items-left flex flex-col gap-6 pt-5 text-center sm:flex-row sm:items-center">
                 <Button href={`mailto:${mail}`}>{contactButtonLabel}</Button>
                 <div className="flex flex-row items-center gap-6 pl-2 sm:pl-0">{linkButtons}</div>
             </div>
