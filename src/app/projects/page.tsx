@@ -1,4 +1,5 @@
 import content from '@content/projects.content.json';
+import MoreProjectsCard from 'components/MoreProjectsCard';
 import ProjectCard from 'components/ProjectCard';
 import {
     SiC,
@@ -50,7 +51,7 @@ export default function Projects() {
         <div className="items-left w-full">
             <div className="grid grid-cols-1 gap-5 pt-7 md:grid-cols-2 lg:grid-cols-3">
                 {projectCards}
-                {/* TODO view all projects card */}
+                <MoreProjectsCard />
             </div>
         </div>
     );
