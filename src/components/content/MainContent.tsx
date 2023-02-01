@@ -27,7 +27,7 @@ export default function MainContent(props: MainContentProps) {
             <Link
                 key={href}
                 className={`text-4xl font-medium motion-safe:transition-opacity ${
-                    active ? 'opacity-100' : 'opacity-50'
+                    active ? 'opacity-100' : 'opacity-[0.45]'
                 }`}
                 href={href}
                 aria-checked={active}
