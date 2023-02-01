@@ -69,6 +69,7 @@
     "stylelint-prettier": "2.0.0",
     "stylelint-value-no-unknown-custom-properties": "4.0.0",
     "tsec": "0.2.6",
+    "vercel-submodules": "1.0.8",
     "webpack-glsl-minify": "1.5.0"
   }
 }
