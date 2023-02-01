@@ -37,7 +37,9 @@ export default function MainContent(props: MainContentProps) {
                 >
                     {heading}
                 </Link>
-                {i < sections.length - 1 && <div className="h-full w-1 bg-black opacity-10" />}
+                {i < sections.length - 1 && (
+                    <div key={`${href}-separator`} className="h-full w-1 bg-black opacity-10" />
+                )}
             </>
         );
     });
