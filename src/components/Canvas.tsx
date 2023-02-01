@@ -13,7 +13,7 @@ import {
 } from 'twgl.js';
 import { resizeCanvasToDisplaySize, withIntersectionObserver } from 'utils/dom';
 import type { Size } from 'hooks/dom';
-import type { MutableRefObject } from 'react';
+import type { MutableRefObject, ReactNode } from 'react';
 import type { ProgramInfo, BufferInfo, Arrays } from 'twgl.js';
 
 export type Uniforms = Record<string, unknown>;
@@ -43,7 +43,7 @@ type CanvasProps = {
     vertexShader?: string;
     fragmentShader?: string;
     reduceMotionOnPrefer?: boolean;
-    children?: JSX.Element;
+    children?: ReactNode;
 };
 
 setDefaults({ attribPrefix: 'a_' });
