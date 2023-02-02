@@ -24,16 +24,19 @@ export default function MainContent(props: MainContentProps) {
 
     const links = sections.map(([href, heading], i) => {
         const active = href === path || (path === '/' && href === '/projects');
+        const name = href.slice(1);
 
         return (
             <Fragment key={href}>
                 <Link
+                    id={`${name}-tab`}
                     className={`text-4xl font-medium motion-safe:transition-opacity ${
                         active ? 'opacity-100' : 'opacity-[0.45] hover:opacity-60'
                     }`}
                     href={href}
-                    aria-checked={active}
-                    aria-expanded={active}
+                    role="tab"
+                    aria-selected={active}
+                    aria-controls={`${name}-tabpanel`}
                 >
                     {heading}
                 </Link>
@@ -53,7 +56,10 @@ export default function MainContent(props: MainContentProps) {
             className="relative z-10 flex h-auto w-[min(80vw,_48rem)] flex-col items-center"
         >
             <HeroSection />
-            <div className="flex w-full flex-col justify-start gap-4 pt-12 sm:flex-row sm:gap-8">
+            <div
+                className="flex w-full flex-col justify-start gap-4 pt-12 sm:flex-row sm:gap-8"
+                role="tablist"
+            >
                 {links}
             </div>
             {children}

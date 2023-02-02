@@ -48,11 +48,16 @@ export default function Projects() {
     });
 
     return (
-        <div className="items-left w-full">
+        <section
+            id="projects-tabpanel"
+            className="items-left w-full"
+            role="tabpanel"
+            aria-labelledby="projects-tab"
+        >
             <div className="grid grid-cols-1 gap-5 pt-7 md:grid-cols-2 lg:grid-cols-3">
                 {projectCards}
                 <MoreProjectsCard />
             </div>
-        </div>
+        </section>
     );
 }
