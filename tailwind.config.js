@@ -14,6 +14,14 @@ module.exports = {
       fontFamily: {
         sans: [`var(${fonts['--font-poppins']})`, ...defaultTheme.fontFamily.sans],
       },
+      width: {
+        responsive: 'min(80vw, 48rem)',
+      },
+      opacity: {
+        active: 1,
+        hover: 0.6,
+        inactive: 0.45,
+      },
     },
   },
   plugins: [require('tailwindcss-animate')],

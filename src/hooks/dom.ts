@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { withResizeObserver } from 'utils/dom';
-import type { MutableRefObject } from 'react';
 
 export type Size = { width: number; height: number };
 
 type ResizeObserverCb = (entry: Size) => void;
+type MouseDownCb = (event: MouseEvent) => void;
 
 /**
  * Custom React hook to get the current size of a DOM element. Stores the size in a ref so doesn't
@@ -12,9 +12,7 @@ type ResizeObserverCb = (entry: Size) => void;
  *
  * @returns The current element size, and a callback to set the element to observe.
  */
-export function useResizeObserver(
-    cb?: ResizeObserverCb
-): [MutableRefObject<Size>, (element: Element) => void] {
+export function useResizeObserver(cb?: ResizeObserverCb) {
     const size = useRef<{ width: number; height: number }>({ width: 0, height: 0 });
     const observer = useRef<ResizeObserver>();
     const currentElement = useRef<Element>();
@@ -42,5 +40,17 @@ export function useResizeObserver(
         observer.current?.observe(element);
     };
 
-    return [size, observeSize];
+    return [size, observeSize] as const;
+}
+
+/**
+ * Custom React hook to run a callback whenever the user presses the mouse.
+ *
+ * @param cb The callback function to run on mousedown.
+ */
+export function useMouseDown(cb: MouseDownCb) {
+    useEffect(() => {
+        document.addEventListener('mousedown', cb);
+        return () => document.removeEventListener('mousedown', cb);
+    }, [cb]);
 }
