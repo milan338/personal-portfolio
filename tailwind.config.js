@@ -22,10 +22,6 @@ module.exports = {
         hover: 0.6,
         inactive: 0.45,
       },
-      data: {
-        visible: 'visible="true"',
-        invisible: 'visible="false"',
-      },
     },
   },
   plugins: [require('tailwindcss-animate')],

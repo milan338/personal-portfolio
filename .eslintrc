@@ -304,8 +304,18 @@
           {
             // React function components
             "selector": "function",
-            "modifiers": ["global", "exported"],
-            "format": ["camelCase", "PascalCase"]
+            "modifiers": ["global"],
+            "format": ["camelCase", "StrictPascalCase"]
+          },
+          {
+            // Next.js dynamic components
+            "selector": "variable",
+            "modifiers": ["global"],
+            "format": ["StrictPascalCase"],
+            "filter": {
+              "regex": "^Dynamic",
+              "match": true
+            }
           }
         ]
       }

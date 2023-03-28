@@ -1,55 +1,79 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { createPortal } from 'react-dom';
 import { useRef } from 'react';
-import { useMouseDown } from 'hooks/dom';
+import { useMouseDown, useKeyDown } from 'hooks/dom';
 import { CgClose } from 'react-icons/cg';
-import type { ReactNode, SetStateAction, Dispatch } from 'react';
+import { usePreventScroll } from 'hooks/window';
+import type { SetStateAction, Dispatch } from 'react';
 
-type ModalProps = {
+type ModalProps = JSX.IntrinsicElements['div'] & {
     visible: boolean;
     setVisible: Dispatch<SetStateAction<boolean>>;
-    children: ReactNode;
+    'aria-label': string;
 };
 
-export default function Modal(props: ModalProps) {
-    const { visible, setVisible, children } = props;
+const DynamicFocusTrap = dynamic(async () => import('focus-trap-react'));
+
+export default function Modal({ className, visible, setVisible, children, ...props }: ModalProps) {
     const modalRef = useRef<HTMLDivElement>(null);
 
+    // Close modal when pressing outside
     useMouseDown((event) => {
         if (!modalRef.current) return;
-        // Close modal when pressing outside
         if (!modalRef.current.contains(event.target as Node)) setVisible(false);
     });
 
-    const modal = (
+    // Close modal when pressing escape
+    useKeyDown((event) => {
+        if (event.key !== 'Escape') return;
+        setVisible(false);
+    });
+
+    // Prevent scrolling outside the modal while visible
+    usePreventScroll(visible);
+
+    const modalContent = (
         <div
-            className="group fixed z-50 flex h-full w-full items-center justify-center
-            transition-[visibility] data-invisible:pointer-events-none data-invisible:invisible"
-            data-visible={visible}
+            ref={modalRef}
+            className={`glass-bg relative z-50 flex h-fit w-responsive transform-gpu flex-row items-center justify-between
+            rounded-xl border-4 border-solid border-neutral-200 border-opacity-80 bg-white bg-opacity-90 shadow-lg
+            group-aria-hidden:scale-105 group-aria-hidden:opacity-0 motion-safe:transition-[transform,opacity] ${
+                className ?? ''
+            }`}
         >
-            <div
-                ref={modalRef}
-                className="glass-bg relative z-50 flex h-fit w-responsive transform-gpu flex-row
-                items-center justify-between rounded-xl border-4 border-solid border-neutral-200
-                border-opacity-80 bg-white bg-opacity-90 p-4 text-xl shadow-lg group-data-invisible:scale-105
-                group-data-invisible:opacity-0 motion-safe:transition-[transform,opacity]"
-            >
-                <div className="flex flex-col">{children}</div>
-                <button className="h-6 w-6 self-start" onClick={() => setVisible(false)}>
-                    <CgClose className="h-full w-full" />
-                </button>
-            </div>
-            <div
-                className="fixed -z-10 h-full w-full bg-black opacity-0 group-data-visible:opacity-30
-                motion-safe:transition-opacity"
-            />
+            <div className="flex flex-col">{children}</div>
+            <button className="h-6 w-6 self-start" onClick={() => setVisible(false)}>
+                <CgClose className="h-full w-full" />
+            </button>
         </div>
     );
 
-    if (typeof document === 'undefined') return modal;
-    const element = document.querySelector('main');
-    if (element === null) throw new Error('Main element not defined');
+    const modal = visible ? (
+        <DynamicFocusTrap>
+            <div
+                className="group fixed z-50 flex h-full w-full items-center justify-center
+                transition-[visibility] aria-hidden:pointer-events-none aria-hidden:invisible"
+                role="alertdialog"
+                aria-modal="true"
+                aria-hidden={!visible}
+                {...props}
+            >
+                {modalContent}
+                <div
+                    className="fixed -z-10 h-full w-full bg-black opacity-30 group-aria-hidden:opacity-0
+                    motion-safe:transition-opacity"
+                />
+            </div>
+        </DynamicFocusTrap>
+    ) : (
+        <></>
+    );
 
-    return createPortal(modal, element);
+    if (!visible || typeof document === 'undefined') return modal;
+    const mainElement = document.querySelector('main');
+    if (mainElement === null) throw new Error('Main element not defined');
+
+    return createPortal(modal, mainElement);
 }

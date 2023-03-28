@@ -28,3 +28,10 @@ export function useWindowSize() {
 
     return size;
 }
+
+export function usePreventScroll(prevent: boolean) {
+    useEffect(() => {
+        if (prevent) document.documentElement.classList.add('overflow-hidden');
+        else document.documentElement.classList.remove('overflow-hidden');
+    }, [prevent]);
+}
