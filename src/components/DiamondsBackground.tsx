@@ -163,7 +163,7 @@ export default function DiamondsBackground() {
     }, []);
 
     return (
-        <div className="fixed h-screen w-full bg-neutral-50">
+        <div className="fixed h-screen w-full">
             <div className="animate-in duration-3000 delay-300 ease-out fill-mode-both motion-safe:fade-in">
                 <Canvas
                     cb={canvasCb}

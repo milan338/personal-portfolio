@@ -13,7 +13,6 @@ type MainContentProps = {
     children?: ReactNode;
 };
 
-// TODO strongly type the map keys using the json
 const PATHS = {
     '/projects': projectsContent.heading,
     '/about': aboutContent.heading,
@@ -45,7 +44,7 @@ export default function MainContent(props: MainContentProps) {
             <Fragment key={href}>
                 <li role="presentation">
                     <Link
-                        className={`text-4xl font-medium motion-safe:transition-opacity ${
+                        className={`motion-safe:transition-opacity ${
                             active ? 'opacity-active' : 'opacity-inactive hover:opacity-hover'
                         }`}
                         href={href}
@@ -70,14 +69,15 @@ export default function MainContent(props: MainContentProps) {
         >
             <HeroSection />
             <ul
-                className="flex w-full flex-col items-center justify-start gap-4 pt-12 max-lg:hidden sm:flex-row sm:gap-6"
+                className="flex w-full flex-col items-center justify-start gap-4 pt-12 text-4xl font-medium
+                max-lg:hidden sm:flex-row sm:gap-6"
                 role="tablist"
             >
                 {links}
             </ul>
             <div
-                className="flex w-full flex-row items-center justify-start gap-4 pt-12 text-4xl font-medium
-                sm:gap-6 lg:hidden"
+                className="flex w-full flex-row items-center justify-start gap-4 pt-12 text-3xl font-medium sm:gap-6
+                md:text-4xl lg:hidden"
             >
                 <SectionsHamburger sections={PATHS} />
                 {/* eslint-disable-next-line security/detect-object-injection */}

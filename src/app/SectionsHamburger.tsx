@@ -1,12 +1,12 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { isLinkActive } from 'components/content/MainContent';
+import { isLinkActive } from './MainContent';
 import { useState, useRef } from 'react';
 import Link from 'next/link';
 import Modal from 'components/Modal';
 import { CgMenuLeftAlt } from 'react-icons/cg';
-import type { Sections } from 'components/content/MainContent';
+import type { Sections } from './MainContent';
 
 type SectionsHamburgerProps = {
     sections: Sections;
@@ -46,13 +46,13 @@ export default function SectionsHamburger(props: SectionsHamburgerProps) {
                 ref={hamburgerRef}
                 id="links-dropdown-button"
                 className="glass-bg relative flex aspect-square items-center justify-center rounded-lg border-4
-                border-solid border-neutral-200 border-opacity-30 bg-white bg-opacity-20 p-3 shadow-lg
-                hover:-translate-y-1 motion-safe:transition-transform"
+                border-solid border-neutral-200 border-opacity-30 bg-white bg-opacity-20 p-2 shadow-lg
+                hover:-translate-y-1 motion-safe:transition-transform md:p-3"
                 onClick={() => setExpanded(!expanded)}
                 aria-label="open navigation modal"
                 aria-controls="navigation-modal"
             >
-                <CgMenuLeftAlt className="h-10 w-10 fill-black" />
+                <CgMenuLeftAlt className="h-9 w-9 fill-black md:h-10 md:w-10" />
             </button>
             <Modal
                 id="navigation-modal"
