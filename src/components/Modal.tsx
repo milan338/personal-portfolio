@@ -36,15 +36,14 @@ export default function Modal({ className, visible, setVisible, children, ...pro
     const modal = (
         <div
             ref={visible ? focusTrapRef : undefined}
-            className="group fixed z-50 flex h-full w-full items-center justify-center
-            transition-[visibility] aria-hidden:pointer-events-none"
+            className="group fixed z-50 flex h-full w-full items-center justify-center aria-hidden:pointer-events-none"
             aria-hidden={!visible}
             {...props}
         >
             <dialog
                 ref={mergeRefs([modalRef, preventScrollRef])}
                 className={`glass-bg modal-initial-focus relative z-50 flex h-fit w-responsive transform-gpu flex-row
-                items-center justify-between rounded-xl border-4 border-solid border-neutral-200 border-opacity-80
+                items-center justify-between rounded-xl border-4 border-solid border-neutral-200 border-opacity-95
                 bg-white bg-opacity-90 shadow-lg group-aria-hidden:scale-105 group-aria-hidden:opacity-0
                 motion-safe:transition-[transform,opacity] ${className ?? ''}`}
                 role="alertdialog"
