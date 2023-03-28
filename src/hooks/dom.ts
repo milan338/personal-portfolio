@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { withResizeObserver } from 'utils/dom';
+import { createFocusTrap } from 'focus-trap';
+import type { FocusTrap } from 'focus-trap';
 
 export type Size = { width: number; height: number };
 
@@ -37,6 +39,7 @@ export function useResizeObserver(cb?: (entry: Size) => void) {
         observer.current?.observe(element);
     };
 
+    // TODO migrate to use the ref idea instead
     return [size, observeSize] as const;
 }
 
@@ -62,4 +65,22 @@ export function useKeyDown(cb: (event: KeyboardEvent) => void) {
         document.addEventListener('keydown', cb);
         return () => document.removeEventListener('keydown', cb);
     }, [cb]);
+}
+
+/**
+ * Custom React hook to trap focus on a given element.
+ *
+ * @returns A callback ref to be set on the element that should trap focus.
+ */
+export function useFocusTrap() {
+    const focusTrap = useRef<FocusTrap>();
+
+    return (element: HTMLElement | null) => {
+        if (element === null) {
+            focusTrap.current?.deactivate();
+            return;
+        }
+        focusTrap.current = createFocusTrap(element);
+        focusTrap.current.activate();
+    };
 }
