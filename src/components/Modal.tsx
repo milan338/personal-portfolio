@@ -8,7 +8,7 @@ import { usePreventScroll } from 'hooks/window';
 import type { SetStateAction, Dispatch } from 'react';
 import { mergeRefs } from 'react-merge-refs';
 
-type ModalProps = JSX.IntrinsicElements['div'] & {
+type ModalProps = JSX.IntrinsicElements['dialog'] & {
     visible: boolean;
     setVisible: Dispatch<SetStateAction<boolean>>;
     'aria-label': string;
@@ -38,7 +38,6 @@ export default function Modal({ className, visible, setVisible, children, ...pro
             ref={visible ? focusTrapRef : undefined}
             className="group fixed z-50 flex h-full w-full items-center justify-center aria-hidden:pointer-events-none"
             aria-hidden={!visible}
-            {...props}
         >
             <dialog
                 ref={mergeRefs([modalRef, preventScrollRef])}
@@ -48,9 +47,14 @@ export default function Modal({ className, visible, setVisible, children, ...pro
                 motion-safe:transition-[transform,opacity] ${className ?? ''}`}
                 role="alertdialog"
                 aria-modal="true"
+                {...props}
             >
                 <div className="flex flex-col">{children}</div>
-                <button className="h-6 w-6 self-start" onClick={() => setVisible(false)}>
+                <button
+                    className="h-6 w-6 self-start"
+                    onClick={() => setVisible(false)}
+                    aria-label="close modal"
+                >
                     <CgClose className="h-full w-full" />
                 </button>
             </dialog>
