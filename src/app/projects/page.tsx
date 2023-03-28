@@ -52,7 +52,7 @@ export default function Projects() {
             id="projects-tabpanel"
             className="items-left w-full"
             role="tabpanel"
-            aria-labelledby="projects-tab"
+            aria-label="projects"
         >
             <div className="grid grid-cols-1 gap-5 pt-7 md:grid-cols-2 lg:grid-cols-3">
                 {projectCards}
