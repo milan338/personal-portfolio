@@ -9,7 +9,8 @@ export type Size = { width: number; height: number };
  * Custom React hook to get the current size of a DOM element. Stores the size in a ref so doesn't
  * cause component rerenders.
  *
- * @returns The current element size, and a callback to set the element to observe.
+ * @returns The current element size, and a callback ref to be set on the element whose size should
+ *   be observed.
  */
 export function useResizeObserver(cb?: (entry: Size) => void) {
     const size = useRef<Size>({ width: 0, height: 0 });
@@ -33,14 +34,14 @@ export function useResizeObserver(cb?: (entry: Size) => void) {
         };
     }, [cb]);
 
-    const observeSize = (element: Element) => {
-        currentElement.current = element;
+    const withElement = (element: HTMLElement | null) => {
         observer.current?.disconnect();
+        if (element === null) return;
+        currentElement.current = element;
         observer.current?.observe(element);
     };
 
-    // TODO migrate to use the ref idea instead
-    return [size, observeSize] as const;
+    return [size, withElement] as const;
 }
 
 /**

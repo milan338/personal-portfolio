@@ -12,6 +12,7 @@ import {
     setUniforms,
 } from 'twgl.js';
 import { resizeCanvasToDisplaySize, withIntersectionObserver } from 'utils/dom';
+import { mergeRefs } from 'react-merge-refs';
 import type { Size } from 'hooks/dom';
 import type { MutableRefObject, ReactNode } from 'react';
 import type { ProgramInfo, BufferInfo, Arrays } from 'twgl.js';
@@ -51,7 +52,7 @@ setDefaults({ attribPrefix: 'a_' });
 export default function Canvas(props: CanvasProps) {
     const { cb, vertexShader, fragmentShader, reduceMotionOnPrefer, children } = props;
     const [gl, setGl] = useState<WebGLRenderingContext | null>(null);
-    const [canvasSize, observeCanvasSize] = useResizeObserver();
+    const [canvasSize, canvasSizeRef] = useResizeObserver();
     const prefersReducedMotion = usePrefersReducedMotion();
     const shaders = useRef<{ vert: string; frag: string }>({ vert: '', frag: '' });
     const bufferInfo = useRef<BufferInfo>();
@@ -147,12 +148,14 @@ export default function Canvas(props: CanvasProps) {
     const withCanvas = (canvas: HTMLCanvasElement | null) => {
         if (canvas === null || gl !== null) return;
         setGl(canvas.getContext('webgl'));
-        observeCanvasSize(canvas);
     };
 
     return (
         <>
-            <canvas ref={withCanvas} className="block h-screen w-full" />
+            <canvas
+                ref={mergeRefs([withCanvas, canvasSizeRef])}
+                className="block h-screen w-full"
+            />
             {children}
         </>
     );
