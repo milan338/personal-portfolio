@@ -1,4 +1,4 @@
-import { Poppins } from '@next/font/google';
+import { Poppins } from 'next/font/google';
 import MainContent from './MainContent';
 import DiamondsBackground from 'components/DiamondsBackground';
 import 'styles/globals.scss';

@@ -20,7 +20,7 @@ export default function MoreProjectsCard() {
             <h1 className="text-2xl font-medium">{projectsContent.moreProjects.label}</h1>
             <div className="hidden h-full w-full items-center justify-center md:flex">
                 <div className="flex aspect-square max-h-36 w-[70%] max-w-[9rem] items-center justify-center rounded-full bg-neutral-100">
-                    <BsArrowUpRight className="h-10 w-10 transform-gpu group-hover:translate-x-1 group-hover:-translate-y-1 motion-safe:transition-transform" />
+                    <BsArrowUpRight className="h-10 w-10 transform-gpu group-hover:-translate-y-1 group-hover:translate-x-1 motion-safe:transition-transform" />
                 </div>
             </div>
             <div className="flex aspect-auto items-center pl-1 md:hidden">

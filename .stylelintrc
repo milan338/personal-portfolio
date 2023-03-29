@@ -3,9 +3,7 @@
     "stylelint-scss",
     "stylelint-no-unsupported-browser-features",
     "stylelint-declaration-block-no-ignored-properties",
-    "stylelint-group-selectors",
-    "stylelint-high-performance-animation",
-    "stylelint-value-no-unknown-custom-properties"
+    "stylelint-high-performance-animation"
   ],
   "extends": [
     "stylelint-config-standard",
@@ -15,34 +13,24 @@
   ],
   "overrides": [
     {
-      "files": ["**/*.css", "**/*.scss", "**/*.jsx", "**/*.tsx"],
+      "files": ["**/*.css", "**/*.scss"],
       "rules": {
         "at-rule-no-unknown": null,
         "declaration-no-important": true,
         "keyframe-declaration-no-important": true,
         "import-notation": "string",
-        "unit-case": "lower",
         "function-name-case": null,
         "function-url-no-scheme-relative": true,
         "function-url-quotes": "always",
         "scss/at-rule-no-unknown": null,
         "plugin/declaration-block-no-ignored-properties": true,
-        "plugin/stylelint-group-selectors": true,
         "plugin/no-unsupported-browser-features": true,
-        "plugin/no-low-performance-animation-properties": true,
-        "csstools/value-no-unknown-custom-properties": [
-          true,
-          { "importFrom": ["src/styles/fonts.json"] }
-        ]
+        "plugin/no-low-performance-animation-properties": true
       }
     },
     {
       "files": ["**/*.scss"],
       "customSyntax": "postcss-scss"
-    },
-    {
-      "files": ["**/*.jsx", "**/*.tsx"],
-      "customSyntax": "postcss-styled-jsx"
     }
   ]
 }
