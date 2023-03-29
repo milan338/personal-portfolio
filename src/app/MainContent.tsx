@@ -1,34 +1,16 @@
 'use client';
 
-import projectsContent from '@content/projects.content';
-import aboutContent from '@content/about.content';
 import HeroSection from './HeroSection';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Fragment } from 'react';
 import type { ReactNode } from 'react';
-import SectionsHamburger from 'app/SectionsHamburger';
+import NavigationHamburger from 'app/NavigationHamburger';
+import { getActiveLink, isLinkActive, PATHS } from 'utils/route';
 
 type MainContentProps = {
     children?: ReactNode;
 };
-
-const PATHS = {
-    '/projects': projectsContent.heading,
-    '/about': aboutContent.heading,
-} as const;
-export type Sections = typeof PATHS;
-
-// TODO refactor out
-export function getActiveLink(activePath: string | null) {
-    if (activePath === null || !Object.hasOwn(PATHS, activePath)) return null;
-    return (activePath === '/' ? '/projects' : activePath) as keyof Sections;
-}
-
-// TODO refactor out
-export function isLinkActive(linkHref: string, activePath: string | null) {
-    return linkHref === getActiveLink(activePath);
-}
 
 export default function MainContent(props: MainContentProps) {
     const { children } = props;
@@ -79,7 +61,7 @@ export default function MainContent(props: MainContentProps) {
                 className="flex w-full flex-row items-center justify-start gap-4 pt-12 text-3xl font-medium sm:gap-6
                 md:text-4xl lg:hidden"
             >
-                <SectionsHamburger sections={PATHS} />
+                <NavigationHamburger />
                 {/* eslint-disable-next-line security/detect-object-injection */}
                 {activeLink === null ? <></> : PATHS[activeLink]}
             </div>
