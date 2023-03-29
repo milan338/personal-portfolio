@@ -1,6 +1,5 @@
 import heroContent from '@content/hero.content';
 import projectsContent from '@content/projects.content';
-import Link from 'next/link';
 import { BsArrowUpRight, BsArrowRight } from 'react-icons/bs';
 
 export default function MoreProjectsCard() {
@@ -8,13 +7,12 @@ export default function MoreProjectsCard() {
     if (url === undefined) throw new Error('Github link not defined');
 
     return (
-        <Link
+        <a
             className="glass-bg group z-20 flex cursor-pointer flex-row gap-4 rounded-xl border-4 border-solid
             border-neutral-200 border-opacity-30 bg-white bg-opacity-20 p-4 shadow-lg md:flex-col"
             href={url}
             target="_blank"
             rel="noreferrer noopener"
-            prefetch={false}
             aria-label={projectsContent.moreProjects.label}
         >
             <h1 className="text-2xl font-medium">{projectsContent.moreProjects.label}</h1>
@@ -26,6 +24,6 @@ export default function MoreProjectsCard() {
             <div className="flex aspect-auto items-center pl-1 md:hidden">
                 <BsArrowRight className="h-8 w-8 transform-gpu group-hover:translate-x-1 motion-safe:transition-transform" />
             </div>
-        </Link>
+        </a>
     );
 }

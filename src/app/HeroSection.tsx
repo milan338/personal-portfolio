@@ -1,7 +1,6 @@
 import content from '@content/hero.content';
 import Button from 'components/Button';
 import { SiGithub, SiLinkedin } from 'react-icons/si';
-import Link from 'next/link';
 import type { IconType } from 'react-icons';
 
 const ICONS: Record<(typeof content)['links'][number]['icon'], IconType> = {
@@ -16,19 +15,12 @@ export default function HeroSection() {
         // eslint-disable-next-line security/detect-object-injection
         const Icon = ICONS[icon];
         return (
-            <Link
-                key={label}
-                href={url}
-                target="_blank"
-                rel="noreferrer noopener"
-                prefetch={false}
-                aria-label={label}
-            >
+            <a key={label} href={url} target="_blank" rel="noreferrer noopener" aria-label={label}>
                 <Icon
                     className="h-9 w-9 text-slate-800 opacity-70 hover:opacity-100
                     motion-safe:transition-opacity"
                 />
-            </Link>
+            </a>
         );
     });
 
