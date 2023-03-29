@@ -1,4 +1,4 @@
-import content from '@content/about.content.json';
+import content from '@content/about.content';
 
 export default function About() {
     const { paragraphs } = content;

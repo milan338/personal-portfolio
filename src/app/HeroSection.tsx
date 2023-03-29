@@ -1,19 +1,20 @@
-import content from '@content/hero.content.json';
+import content from '@content/hero.content';
 import Button from 'components/Button';
 import { SiGithub, SiLinkedin } from 'react-icons/si';
 import Link from 'next/link';
+import type { IconType } from 'react-icons';
 
-const ICONS = new Map([
-    ['github', SiGithub],
-    ['linkedin', SiLinkedin],
-]);
+const ICONS: Record<(typeof content)['links'][number]['icon'], IconType> = {
+    github: SiGithub,
+    linkedin: SiLinkedin,
+};
 
 export default function HeroSection() {
     const { heading, subheading, links, contactButtonLabel, mail } = content;
 
     const linkButtons = links.map(({ label, url, icon }) => {
-        const Icon = ICONS.get(icon);
-        if (Icon === undefined) throw new Error(`Link ${icon} is not a valid link`);
+        // eslint-disable-next-line security/detect-object-injection
+        const Icon = ICONS[icon];
         return (
             <Link
                 key={label}

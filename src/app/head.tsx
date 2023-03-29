@@ -1,4 +1,4 @@
-import content from '@content/hero.content.json';
+import content from '@content/hero.content';
 
 // TODO improve SEO
 
@@ -8,7 +8,7 @@ export default function Head() {
             <title>{content.heading}</title>
 
             <meta name="title" content={content.heading} />
-            <meta name="description" content={content.subheadings.join(' ')} />
+            <meta name="description" content={content.subheading} />
             <meta content="width=device-width, initial-scale=1" name="viewport" />
 
             <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />

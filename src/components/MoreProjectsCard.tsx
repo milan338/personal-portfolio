@@ -1,5 +1,5 @@
-import heroContent from '@content/hero.content.json';
-import projectsContent from '@content/projects.content.json';
+import heroContent from '@content/hero.content';
+import projectsContent from '@content/projects.content';
 import Link from 'next/link';
 import { BsArrowUpRight, BsArrowRight } from 'react-icons/bs';
 

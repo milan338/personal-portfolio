@@ -1,7 +1,7 @@
 'use client';
 
-import projectsContent from '@content/projects.content.json';
-import aboutContent from '@content/about.content.json';
+import projectsContent from '@content/projects.content';
+import aboutContent from '@content/about.content';
 import HeroSection from './HeroSection';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
