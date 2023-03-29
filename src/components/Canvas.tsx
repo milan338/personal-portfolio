@@ -150,17 +150,14 @@ export default function Canvas({
     }, [canvasSize, gl, prefersReducedMotion, reduceMotionOnPrefer]);
 
     // Run once on component mount, and once on unmount (with null)
-    const withCanvas = (canvas: HTMLCanvasElement | null) => {
+    const canvasRef = (canvas: HTMLCanvasElement | null) => {
         if (canvas === null || gl !== null) return;
         setGl(canvas.getContext('webgl'));
     };
 
     return (
         <>
-            <canvas
-                ref={mergeRefs([withCanvas, canvasSizeRef])}
-                className="block h-screen w-full"
-            />
+            <canvas ref={mergeRefs([canvasRef, canvasSizeRef])} className="block h-screen w-full" />
             {children}
         </>
     );

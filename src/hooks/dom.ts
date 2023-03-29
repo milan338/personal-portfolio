@@ -34,14 +34,14 @@ export function useResizeObserver(cb?: (entry: Size) => void) {
         };
     }, [cb]);
 
-    const withElement = (element: HTMLElement | null) => {
+    const ref = (element: HTMLElement | null) => {
         observer.current?.disconnect();
         if (element === null) return;
         currentElement.current = element;
         observer.current?.observe(element);
     };
 
-    return [size, withElement] as const;
+    return [size, ref] as const;
 }
 
 /**
