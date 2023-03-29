@@ -49,8 +49,13 @@ type CanvasProps = {
 
 setDefaults({ attribPrefix: 'a_' });
 
-export default function Canvas(props: CanvasProps) {
-    const { cb, vertexShader, fragmentShader, reduceMotionOnPrefer, children } = props;
+export default function Canvas({
+    cb,
+    vertexShader,
+    fragmentShader,
+    reduceMotionOnPrefer,
+    children,
+}: CanvasProps) {
     const [gl, setGl] = useState<WebGLRenderingContext | null>(null);
     const [canvasSize, canvasSizeRef] = useResizeObserver();
     const prefersReducedMotion = usePrefersReducedMotion();

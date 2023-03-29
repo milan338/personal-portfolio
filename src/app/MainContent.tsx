@@ -12,8 +12,7 @@ type MainContentProps = {
     children?: ReactNode;
 };
 
-export default function MainContent(props: MainContentProps) {
-    const { children } = props;
+export default function MainContent({ children }: MainContentProps) {
     const path = usePathname();
     const activeLink = getActiveLink(path);
     const sections = Object.entries(PATHS);

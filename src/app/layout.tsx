@@ -11,8 +11,7 @@ const POPPINS = Poppins({
     display: 'swap',
 });
 
-export default function RootLayout(props: RootLayoutProps) {
-    const { children } = props;
+export default function RootLayout({ children }: RootLayoutProps) {
     return (
         <html lang="en" className={`${POPPINS.variable} bg-neutral-50`}>
             <head />

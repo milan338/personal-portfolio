@@ -8,8 +8,7 @@ type ProjectCardProps = {
     children?: ReactNode;
 };
 
-export default function ProjectCard(props: ProjectCardProps) {
-    const { label, description, url, children } = props;
+export default function ProjectCard({ label, description, url, children }: ProjectCardProps) {
     return (
         <Link
             className="glass-bg z-20 flex transform-gpu cursor-pointer flex-col rounded-xl border-4
