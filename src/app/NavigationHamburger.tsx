@@ -1,19 +1,19 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
-import { PATHS, isLinkActive } from 'utils/route';
+import { PATHS } from 'utils/route';
 import { useState, useRef } from 'react';
 import Link from 'next/link';
 import Modal from 'components/Modal';
 import { CgMenuLeftAlt } from 'react-icons/cg';
+import { useActivePath } from 'hooks/route';
 
 export default function NavigationHamburger() {
     const hamburgerRef = useRef<HTMLButtonElement>(null);
     const [expanded, setExpanded] = useState(false);
-    const path = usePathname();
+    const [activePath] = useActivePath();
 
     const links = Object.entries(PATHS).map(([href, heading]) => {
-        const active = isLinkActive(href, path);
+        const active = href === activePath;
         const name = href.slice(1);
 
         return (

@@ -8,12 +8,15 @@ export const PATHS = {
 
 export type Sections = typeof PATHS;
 
-export function getActiveLink(activePath: string | null) {
-    if (activePath === '/') return '/projects';
-    if (activePath === null || !Object.hasOwn(PATHS, activePath)) return null;
-    return activePath as keyof Sections;
-}
-
-export function isLinkActive(linkHref: string, activePath: string | null) {
-    return linkHref === getActiveLink(activePath);
+/**
+ * Get the active path given the current path, accounting for the default route acting as a
+ * different route.
+ *
+ * @param currentPath The current path, can be obtained with usePathName() from next/navigation
+ * @returns The currently active path, or null if the current path is invalid or null
+ */
+export function getActivePath(currentPath: string | null) {
+    if (currentPath === '/') return '/projects';
+    if (currentPath === null || !Object.hasOwn(PATHS, currentPath)) return null;
+    return currentPath as keyof Sections;
 }

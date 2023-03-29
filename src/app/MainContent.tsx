@@ -2,23 +2,22 @@
 
 import HeroSection from './HeroSection';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { Fragment } from 'react';
 import type { ReactNode } from 'react';
 import NavigationHamburger from 'app/NavigationHamburger';
-import { getActiveLink, isLinkActive, PATHS } from 'utils/route';
+import { PATHS } from 'utils/route';
+import { useActivePath } from 'hooks/route';
 
 type MainContentProps = {
     children?: ReactNode;
 };
 
 export default function MainContent({ children }: MainContentProps) {
-    const path = usePathname();
-    const activeLink = getActiveLink(path);
+    const [activePath] = useActivePath();
     const sections = Object.entries(PATHS);
 
     const links = sections.map(([href, heading], i) => {
-        const active = isLinkActive(href, path);
+        const active = href === activePath;
         const name = href.slice(1);
 
         return (
@@ -62,7 +61,7 @@ export default function MainContent({ children }: MainContentProps) {
             >
                 <NavigationHamburger />
                 {/* eslint-disable-next-line security/detect-object-injection */}
-                {activeLink === null ? <></> : PATHS[activeLink]}
+                {activePath === null ? <></> : PATHS[activePath]}
             </div>
             {children}
         </section>
