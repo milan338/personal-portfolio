@@ -24,7 +24,8 @@
     ],
     "baseUrl": "./src",
     "paths": {
-      "@content/*": ["../portfolio-content/*"]
+      "@content/*": ["../portfolio-content/*"],
+      "@public/*": ["../public"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
