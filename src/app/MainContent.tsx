@@ -6,18 +6,19 @@ import { Fragment } from 'react';
 import type { ReactNode } from 'react';
 import NavigationHamburger from 'app/NavigationHamburger';
 import { PATHS } from 'utils/route';
-import { useActivePath } from 'hooks/route';
+import { usePathname } from 'next/navigation';
 
 type MainContentProps = {
     children?: ReactNode;
 };
 
 export default function MainContent({ children }: MainContentProps) {
-    const [activePath] = useActivePath();
-    const sections = Object.entries(PATHS);
+    const path = usePathname();
+    if (!Object.hasOwn(PATHS, path)) throw new Error(`Path ${path} not in PATHS object`);
+    const paths = Object.entries(PATHS).slice(1);
 
-    const links = sections.map(([href, heading], i) => {
-        const active = href === activePath;
+    const links = paths.map(([href, heading], i) => {
+        const active = PATHS[href as keyof typeof PATHS] === PATHS[path as keyof typeof PATHS];
         const name = href.slice(1);
 
         return (
@@ -35,7 +36,7 @@ export default function MainContent({ children }: MainContentProps) {
                         {heading}
                     </Link>
                 </li>
-                {i < sections.length - 1 && (
+                {i < paths.length - 1 && (
                     <div className="hidden h-full w-[0.15rem] bg-black opacity-10 sm:flex" />
                 )}
             </Fragment>
@@ -49,8 +50,7 @@ export default function MainContent({ children }: MainContentProps) {
         >
             <HeroSection />
             <ul
-                className="flex w-full flex-col items-center justify-start gap-4 pt-12 text-4xl font-medium
-                max-lg:hidden sm:flex-row sm:gap-6"
+                className="flex w-full flex-row items-center justify-start gap-6 pt-12 text-4xl font-medium max-lg:hidden"
                 role="tablist"
             >
                 {links}
@@ -61,7 +61,7 @@ export default function MainContent({ children }: MainContentProps) {
             >
                 <NavigationHamburger />
                 {/* eslint-disable-next-line security/detect-object-injection */}
-                {activePath === null ? <></> : PATHS[activePath]}
+                {PATHS[path as keyof typeof PATHS]}
             </div>
             {children}
         </section>
