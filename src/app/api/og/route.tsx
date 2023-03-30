@@ -17,7 +17,7 @@ export async function GET({ nextUrl }: NextRequest) {
 
     const image = (
         <div
-            tw="relative w-full h-full flex flex-col items-start justify-end p-32"
+            tw="relative flex h-full w-full flex-col items-start justify-end p-32"
             style={{ backgroundImage: `url(${bgURL.toString()})` }}
         >
             <svg
@@ -38,8 +38,8 @@ export async function GET({ nextUrl }: NextRequest) {
                 />
             </svg>
             <div tw="flex flex-col items-start justify-between">
-                <h1 tw="text-[10rem] font-normal pb-32">{searchParams.get('title')}</h1>
-                <div tw="w-full h-auto flex flex-col items-start justify-center">
+                <h1 tw="pb-32 text-[10rem] font-normal">{searchParams.get('title')}</h1>
+                <div tw="flex h-auto w-full flex-col items-start justify-center">
                     <h2 tw="mx-[-6px] text-7xl font-medium">{heading}</h2>
                     <h3 tw="w-1/3 text-3xl font-normal">{subheading}</h3>
                 </div>
