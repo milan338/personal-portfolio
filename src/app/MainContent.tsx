@@ -24,7 +24,7 @@ export default function MainContent({ children }: MainContentProps) {
                 className="flex w-full flex-row items-center justify-start gap-6 pt-12 text-4xl font-medium max-lg:hidden"
                 role="tablist"
             >
-                <PathLinks />
+                <PathLinks showSeparator />
             </ul>
             <div
                 className="flex w-full flex-row items-center justify-start gap-4 pt-12 text-3xl font-medium sm:gap-6

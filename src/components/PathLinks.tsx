@@ -5,10 +5,11 @@ import Link from 'next/link';
 import { Fragment } from 'react';
 
 type PathLinksProps = {
+    showSeparator?: boolean;
     onClick?: MouseEventHandler<HTMLAnchorElement>;
 };
 
-export default function PathLinks({ onClick }: PathLinksProps) {
+export default function PathLinks({ showSeparator, onClick }: PathLinksProps) {
     const path = usePathname();
     const paths = Object.entries(PATHS).slice(1);
     if (!Object.hasOwn(PATHS, path)) throw new Error(`Path ${path} not in PATHS object`);
@@ -33,7 +34,7 @@ export default function PathLinks({ onClick }: PathLinksProps) {
                         {heading}
                     </Link>
                 </li>
-                {i < paths.length - 1 && (
+                {showSeparator === true && i < paths.length - 1 && (
                     <div className="hidden h-full w-[0.15rem] bg-black opacity-10 sm:flex" />
                 )}
             </Fragment>
