@@ -16,7 +16,7 @@ import {
 } from 'react-icons/si';
 import type { IconType } from 'react-icons';
 import type { Metadata } from 'next';
-import { PATHS, getOgImage } from 'utils/route';
+import { TITLES, getOgImage } from 'utils/route';
 
 const ICONS: Record<(typeof content)['projects'][number]['icons'][number], IconType> = {
     c: SiC,
@@ -67,6 +67,6 @@ export default function Projects() {
 export const metadata: Metadata = {
     title: content.title,
     openGraph: {
-        images: [getOgImage(PATHS['/projects'])],
+        images: [getOgImage(TITLES['/projects'])],
     },
 };

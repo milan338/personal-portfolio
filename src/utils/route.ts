@@ -9,6 +9,12 @@ export const PATHS = {
     '/about': aboutContent.heading,
 } as const;
 
+export const TITLES = {
+    '/': projectsContent.title,
+    '/projects': projectsContent.title,
+    '/about': aboutContent.title,
+};
+
 /**
  * Get the og image for the current route, for use in page metadata.
  *
@@ -17,7 +23,7 @@ export const PATHS = {
  */
 export function getOgImage(routeName: string) {
     const res: Exclude<Metadata['openGraph'], null | undefined>['images'] = {
-        url: new URL(`api/og/${routeName}`, heroContent.url).toString(),
+        url: new URL(`api/og?title=${routeName}`, heroContent.url).toString(),
         width: 1920,
         height: 1080,
     };
