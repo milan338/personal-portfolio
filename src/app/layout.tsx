@@ -16,15 +16,12 @@ const POPPINS = Poppins({
 export default function RootLayout({ children }: RootLayoutProps) {
     return (
         <html lang="en" className={`${POPPINS.variable} bg-neutral-50`}>
-            <body>
+            <body className="min-h-screen pb-20">
                 <div id="window-size" className="invisible absolute -z-50 h-screen w-full" />
                 <main className="flex min-h-0 w-full justify-center">
                     <DiamondsBackground />
                     <MainContent>{children}</MainContent>
                 </main>
-
-                {/* TODO remove and just have min-h along with apdding */}
-                <footer className="h-20" />
             </body>
         </html>
     );
@@ -37,7 +34,7 @@ export const metadata: Metadata = {
     },
     description: content.subheading,
     icons: {
-        icon: '/icon.png',
+        icon: '/favicon.ico',
         apple: '/apple-touch-icon.png',
     },
     openGraph: {
