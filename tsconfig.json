@@ -19,8 +19,7 @@
         "name": "next"
       },
       {
-        "name": "tsec",
-        "exemptionConfig": "./tsec-exemption-list.json"
+        "name": "tsec"
       }
     ],
     "baseUrl": "./src",
