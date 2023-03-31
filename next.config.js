@@ -2,12 +2,16 @@ const withBundleAnalyser = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYSE === 'true',
 });
 
+const DEV = process.env.NODE_ENV !== 'production';
+
 const ContentSecurityPolicy = `
   default-src 'self';
   base-uri 'none';
   img-src 'self';
   style-src 'self' 'unsafe-inline';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline';
+  script-src 'self' 'unsafe-eval' 'unsafe-inline'${
+    DEV ? ' https://cdn.vercel-insights.com/v1/script.debug.js' : ''
+  };
   object-src 'none';
   script-src-attr 'none';
   frame-ancestors 'none';
@@ -88,6 +92,9 @@ const nextConfig = withBundleAnalyser({
       },
     });
     config.resolve.extensions.push('.glsl', '.vs', '.fs', '.vert', '.frag');
+    config.output.trustedTypes = {
+      policyName: 'default',
+    };
     return config;
   },
   headers() {

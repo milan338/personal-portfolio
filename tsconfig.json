@@ -19,7 +19,8 @@
         "name": "next"
       },
       {
-        "name": "tsec"
+        "name": "tsec",
+        "exemptionConfig": "./tsec-exemption-list.json"
       }
     ],
     "baseUrl": "./src",
@@ -28,6 +29,12 @@
       "@public/*": ["../public"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "portfolio-content/trusted-types.js"
+  ],
   "exclude": ["node_modules"]
 }
