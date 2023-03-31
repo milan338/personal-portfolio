@@ -17,6 +17,7 @@ const ContentSecurityPolicy = `
   frame-ancestors 'none';
   form-action 'none';
   manifest-src 'self';
+  connect-src 'self' vitals.vercel-insights.com;
   require-trusted-types-for 'script';
 `;
 
