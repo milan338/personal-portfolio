@@ -1,9 +1,11 @@
 import { Poppins } from 'next/font/google';
 import content from '@content/hero.content';
 import MainContent from './MainContent';
+import { ANALYTICS_SRC } from 'utils/window';
 import DiamondsBackground from 'components/DiamondsBackground';
 import 'styles/globals.scss';
 import type { Metadata } from 'next';
+import Script from 'next/script';
 
 const POPPINS = Poppins({
     variable: '--font-poppins',
@@ -21,6 +23,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 <main className="flex min-h-0 w-full justify-center">
                     <DiamondsBackground />
                     <MainContent>{children}</MainContent>
+                    <Script src={ANALYTICS_SRC} async defer strategy="lazyOnload" />
                 </main>
             </body>
         </html>
