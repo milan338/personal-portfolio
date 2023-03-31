@@ -26,6 +26,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     <Script
                         src={ANALYTICS_SRC}
                         integrity={ANALYTICS_INTEGRITY}
+                        strategy="lazyOnload"
                         crossOrigin="anonymous"
                         async
                         defer
