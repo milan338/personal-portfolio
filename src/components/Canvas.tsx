@@ -157,7 +157,7 @@ export default function Canvas({
 
     return (
         <>
-            <canvas ref={mergeRefs([canvasRef, canvasSizeRef])} className="block h-screen w-full" />
+            <canvas ref={mergeRefs([canvasRef, canvasSizeRef])} className="block h-full w-full" />
             {children}
         </>
     );

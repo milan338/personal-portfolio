@@ -36,7 +36,7 @@ export default function Modal({ className, visible, setVisible, children, ...pro
     const modal = (
         <div
             ref={visible ? focusTrapRef : undefined}
-            className="group fixed z-50 flex h-full w-full items-center justify-center aria-hidden:pointer-events-none"
+            className="group fixed z-50 flex h-screen w-screen items-center justify-center aria-hidden:pointer-events-none"
             aria-hidden={!visible}
         >
             <dialog
@@ -59,7 +59,7 @@ export default function Modal({ className, visible, setVisible, children, ...pro
                 </button>
             </dialog>
             <div
-                className="fixed -z-10 h-full w-full bg-black opacity-30 group-aria-hidden:opacity-0
+                className="fixed -z-10 h-full w-screen bg-black opacity-30 group-aria-hidden:opacity-0
                 motion-safe:transition-opacity"
             />
         </div>
