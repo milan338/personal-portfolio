@@ -1,5 +1,5 @@
-import { ImageResponse } from '@vercel/og';
 import content from '@content/hero.content';
+import { ImageResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export async function GET({ nextUrl }: NextRequest) {
