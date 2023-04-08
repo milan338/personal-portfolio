@@ -32,7 +32,7 @@ export default function MainContent({ children }: MainContentProps) {
             >
                 <NavigationHamburger />
                 {/* eslint-disable-next-line security/detect-object-injection */}
-                {PATHS[path as keyof typeof PATHS]}
+                {PATHS[path as keyof typeof PATHS].heading}
             </div>
             {children}
         </section>

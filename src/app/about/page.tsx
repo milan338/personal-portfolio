@@ -1,6 +1,6 @@
 import content from '@content/about.content';
 import type { Metadata } from 'next';
-import { TITLES, getOgImage } from 'utils/route';
+import { PATHS, getOgImage } from 'utils/route';
 
 export default function About() {
     const { paragraphs } = content;
@@ -26,6 +26,6 @@ export default function About() {
 export const metadata: Metadata = {
     title: content.title,
     openGraph: {
-        images: [getOgImage(TITLES['/about'])],
+        images: [getOgImage(PATHS['/about'].title)],
     },
 };

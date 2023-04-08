@@ -14,8 +14,9 @@ export default function PathLinks({ showSeparator, onClick }: PathLinksProps) {
     const paths = Object.entries(PATHS).slice(1);
     if (!Object.hasOwn(PATHS, path)) throw new Error(`Path ${path} not in PATHS object`);
 
-    const links = paths.map(([href, heading], i) => {
-        const active = PATHS[href as keyof typeof PATHS] === PATHS[path as keyof typeof PATHS];
+    const links = paths.map(([href, { heading }], i) => {
+        const active =
+            PATHS[href as keyof typeof PATHS].id === PATHS[path as keyof typeof PATHS].id;
         const name = href.slice(1);
 
         return (
