@@ -1,4 +1,4 @@
-#define N_POINTS 5
+const int N_POINTS = 5;
 
 precision mediump float;
 
@@ -35,11 +35,11 @@ float getDiamondScale(vec2 realCentroid, vec2 point, bool isCursor) {
     // Since the points wrap around the screen, must also find the wrapped distance
     // Wrapping occurs both horizontally and vertically across all 4 screen edges
     // Set the actual vertical and horizontal distances to the minimum of wrapped and non-wrapped
-    float distHorizontal = min(diff.x, (resolution.x * 2.0) - diff.x);
-    float distVertical = min(diff.y, (resolution.y * 2.0) - diff.y);
+    float distHorizontal = min(diff.x, resolution.x * 2.0 - diff.x);
+    float distVertical = min(diff.y, resolution.y * 2.0 - diff.y);
 
     // The distance between the centroid and point
-    float dist = sqrt((distHorizontal * distHorizontal) + (distVertical * distVertical));
+    float dist = sqrt(distHorizontal * distHorizontal + distVertical * distVertical);
 
     // Scale the distance between the centroid and vertex - don't scale above 1
     return min(1.0, dist * u_radiusScale);
@@ -50,7 +50,7 @@ void main() {
     vec4 diff = vec4(a_position.xy - a_centroid, 0.0, 0.0);
 
     // Get centroid position scaled to the canvas size
-    vec2 realCentroid = (a_centroid * u_resolution) / u_pixelRatio;
+    vec2 realCentroid = a_centroid * u_resolution / u_pixelRatio;
 
     // Factor by which to scale the distance between the centroid and vertex
     float scale = getDiamondScale(realCentroid, u_cursorPos, true);
@@ -59,5 +59,5 @@ void main() {
     }
 
     // Final vertex position is just the original vector from the centroid but scaled
-    gl_Position = a_position - (diff * scale);
+    gl_Position = a_position - diff * scale;
 }

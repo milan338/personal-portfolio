@@ -17,7 +17,7 @@ export const PATHS = {
  */
 export function getOgImage(routeName: string) {
     const res: Exclude<Metadata['openGraph'], null | undefined>['images'] = {
-        url: new URL(`api/og?title=${routeName}`, heroContent.url).toString(),
+        url: new URL(`/api/og?title=${routeName}`, heroContent.url).toString(),
     };
     return res;
 }

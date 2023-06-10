@@ -3,8 +3,8 @@ import content from '@content/hero.content';
 import MainContent from './MainContent';
 import DiamondsBackground from 'components/DiamondsBackground';
 import 'styles/globals.scss';
-import type { Metadata } from 'next';
 import Analytics from 'components/Analytics';
+import type { Metadata } from 'next';
 
 const POPPINS = Poppins({
     variable: '--font-poppins',
@@ -30,6 +30,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
 }
 
 export const metadata: Metadata = {
+    metadataBase: new URL(content.url),
     title: {
         default: content.heading,
         template: `%s | ${content.heading}`,

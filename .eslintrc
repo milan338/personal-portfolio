@@ -328,7 +328,7 @@
             "selector": "variable",
             "modifiers": ["global", "const", "exported"],
             "filter": {
-              "regex": "(^metadata$)|(^config$)",
+              "regex": "(^metadata$)|(^dynamic$)|(^dynamicParams$)|(^revalidate$)|(^fetchCache$)|(^runtime$)|(^preferredRegion$)",
               "match": true
             },
             "format": ["camelCase"]
