@@ -8,8 +8,7 @@
   "extends": [
     "stylelint-config-standard",
     "stylelint-config-css-modules",
-    "stylelint-prettier/recommended",
-    "stylelint-config-idiomatic-order"
+    "stylelint-config-clean-order"
   ],
   "overrides": [
     {

@@ -1,6 +1,17 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
-  "cSpell.words": ["Ardu", "Cplusplus", "mediump", "Nextdotjs", "texcoord", "Threedotjs", "twgl"],
+  "cSpell.words": [
+    "Ardu",
+    "Cplusplus",
+    "mediump",
+    "Nextdotjs",
+    "sonarjs",
+    "texcoord",
+    "Threedotjs",
+    "trivago",
+    "tsec",
+    "twgl"
+  ],
   "css.customData": ["./.vscode/tailwind-css-data.json"]
 }

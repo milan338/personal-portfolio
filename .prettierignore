@@ -2,3 +2,5 @@
 /coverage
 /build
 node_modules
+.next
+.vercel
