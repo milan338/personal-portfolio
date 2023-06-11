@@ -1,73 +1,63 @@
 'use client';
 
-import { createPortal } from 'react-dom';
-import { useRef } from 'react';
-import { useMouseDown, useKeyDown, useFocusTrap } from 'hooks/dom';
+import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
 import { CgClose } from 'react-icons/cg';
 import { usePreventScroll } from 'hooks/window';
-import type { SetStateAction, Dispatch } from 'react';
 import { mergeRefs } from 'react-merge-refs';
 
+export type ModalRef = {
+    show: () => void;
+    close: () => void;
+};
+
 type ModalProps = JSX.IntrinsicElements['dialog'] & {
-    visible: boolean;
-    setVisible: Dispatch<SetStateAction<boolean>>;
     'aria-label': string;
 };
 
-export default function Modal({ className, visible, setVisible, children, ...props }: ModalProps) {
-    const modalRef = useRef<HTMLDialogElement>(null);
-    const focusTrapRef = useFocusTrap();
+export const Modal = forwardRef<ModalRef, ModalProps>(({ className, children, ...props }, ref) => {
+    const dialogRef = useRef<HTMLDialogElement>(null);
+    const [preventScrollRef, enableScroll, disableScroll] = usePreventScroll();
 
-    // Close modal when pressing outside
-    useMouseDown((event) => {
-        if (!modalRef.current) return;
-        if (!modalRef.current.contains(event.target as Node)) setVisible(false);
-    });
+    const show = useCallback(() => {
+        dialogRef.current?.showModal();
+        dialogRef.current?.setAttribute('aria-hidden', 'false');
+        disableScroll();
+    }, [disableScroll]);
 
-    // Close modal when pressing escape
-    useKeyDown((event) => {
-        if (event.key !== 'Escape') return;
-        setVisible(false);
-    });
+    const close = () => dialogRef.current?.close();
 
-    // Prevent scrolling outside the modal while visible
-    const preventScrollRef = usePreventScroll(visible);
+    useImperativeHandle(ref, () => ({ show, close }), [show]);
 
-    const modal = (
-        <div
-            ref={visible ? focusTrapRef : undefined}
-            className="group fixed z-50 flex h-screen w-screen items-center justify-center aria-hidden:pointer-events-none"
-            aria-hidden={!visible}
+    return (
+        <dialog
+            ref={mergeRefs([dialogRef, preventScrollRef])}
+            className="glass-bg box motion-safe:transition-[opacity,transform] fixed inset-0 z-50 m-auto flex h-fit w-responsive transform-gpu
+            flex-row items-center justify-between rounded-xl border-4 border-solid border-neutral-200/95
+            bg-white/90 p-0 shadow-lg aria-hidden:pointer-events-none aria-hidden:scale-105
+            aria-hidden:opacity-0 aria-hidden:backdrop:opacity-0 backdrop:motion-safe:transition-opacity"
+            role="alertdialog"
+            aria-modal="true"
+            aria-hidden="true"
+            onClose={() => {
+                enableScroll();
+                dialogRef.current?.setAttribute('aria-hidden', 'true');
+            }}
+            onClick={(event) => {
+                if (event.target === event.currentTarget) close();
+            }}
+            {...props}
         >
-            <dialog
-                ref={mergeRefs([modalRef, preventScrollRef])}
-                className={`glass-bg modal-initial-focus relative z-50 flex h-fit w-responsive transform-gpu flex-row
-                items-center justify-between rounded-xl border-4 border-solid border-neutral-200 border-opacity-95
-                bg-white bg-opacity-90 shadow-lg group-aria-hidden:scale-105 group-aria-hidden:opacity-0
-                motion-safe:transition-[transform,opacity] ${className ?? ''}`}
-                role="alertdialog"
-                aria-modal="true"
-                {...props}
+            <div className={`flex w-full flex-col ${className ?? ''}`}>{children}</div>
+            <button
+                className="absolute right-4 top-4 h-6 w-6"
+                onClick={close}
+                aria-label="close modal"
             >
-                <div className="flex flex-col">{children}</div>
-                <button
-                    className="h-6 w-6 self-start"
-                    onClick={() => setVisible(false)}
-                    aria-label="close modal"
-                >
-                    <CgClose className="h-full w-full" />
-                </button>
-            </dialog>
-            <div
-                className="fixed -z-10 h-full w-screen bg-black opacity-30 group-aria-hidden:opacity-0
-                motion-safe:transition-opacity"
-            />
-        </div>
+                <CgClose className="h-full w-full" />
+            </button>
+        </dialog>
     );
+});
+Modal.displayName = 'Modal';
 
-    if (typeof document === 'undefined') return modal;
-    const mainElement = document.querySelector('main');
-    if (mainElement === null) throw new Error('Main element not defined');
-
-    return createPortal(modal, mainElement);
-}
+export default Modal;
