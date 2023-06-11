@@ -11,7 +11,7 @@ uniform vec2 u_resolution;
 uniform float u_pixelRatio;
 uniform float u_radiusScale;
 
-/**
+/*
  * Get the scale for the diamond size based on contributions from a given point.
  *
  * @param realCentroid Diamond centroid scaled to the window dimensions.

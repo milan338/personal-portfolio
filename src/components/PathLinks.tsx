@@ -35,7 +35,7 @@ export default function PathLinks({ showSeparator, onClick }: PathLinksProps) {
                         {heading}
                     </Link>
                 </li>
-                {showSeparator === true && i < paths.length - 1 && (
+                {showSeparator && i < paths.length - 1 && (
                     <div className="hidden h-full w-[0.15rem] bg-black opacity-10 sm:flex" />
                 )}
             </Fragment>

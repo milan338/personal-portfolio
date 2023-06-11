@@ -78,9 +78,6 @@ const securityHeaders = [
  * @type {import('next').NextConfig}
  */
 const nextConfig = withBundleAnalyser({
-  experimental: {
-    appDir: true,
-  },
   webpack: (config) => {
     config.module.rules.push({
       test: /\.(?:glsl|vs|fs|vert|frag)$/u,
@@ -98,11 +95,20 @@ const nextConfig = withBundleAnalyser({
     };
     return config;
   },
-  headers() {
+  async headers() {
     return [
       {
         source: '/(.*)',
         headers: securityHeaders,
+      },
+    ];
+  },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/projects',
+        permanent: true,
       },
     ];
   },

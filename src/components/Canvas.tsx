@@ -115,7 +115,7 @@ export default function Canvas({
             lastTime.current = time;
             const uniforms = renderCb(deltaTime, time);
 
-            const reduceMotion = prefersReducedMotion.current && reduceMotionOnPrefer === true;
+            const reduceMotion = prefersReducedMotion.current && reduceMotionOnPrefer;
 
             if (
                 !reduceMotion &&

@@ -25,10 +25,10 @@ export default function HeroSection() {
     });
 
     return (
-        <section className="items-left w-full pt-14">
+        <section className="w-full items-start pt-14">
             <h1 className="mx-[-6px] text-7xl font-medium md:text-8xl">{heading}</h1>
             <h2 className="text-lg font-normal sm:w-2/3 md:text-2xl">{subheading}</h2>
-            <div className="items-left flex flex-col gap-6 pt-5 text-center sm:flex-row sm:items-center">
+            <div className="flex flex-col items-start gap-6 pt-5 text-center sm:flex-row sm:items-center">
                 <Button href={`mailto:${mail}`} target="_blank">
                     {contactButtonLabel}
                 </Button>

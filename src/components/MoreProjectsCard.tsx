@@ -8,8 +8,8 @@ export default function MoreProjectsCard() {
 
     return (
         <a
-            className="glass-bg group z-20 flex cursor-pointer flex-row gap-4 rounded-xl border-4 border-solid
-            border-neutral-200 border-opacity-30 bg-white bg-opacity-20 p-4 shadow-lg md:flex-col"
+            className="glass-bg group z-20 flex cursor-pointer flex-row gap-4 rounded-xl border-4
+            border-solid border-neutral-200/30 bg-white/20 p-4 shadow-lg md:flex-col"
             href={url}
             target="_blank"
             rel="noreferrer noopener"

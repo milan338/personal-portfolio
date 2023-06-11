@@ -10,8 +10,8 @@ type ProjectCardProps = {
 export default function ProjectCard({ label, description, url, children }: ProjectCardProps) {
     return (
         <a
-            className="glass-bg z-20 flex transform-gpu cursor-pointer flex-col rounded-xl border-4
-            border-solid border-neutral-200 border-opacity-30 bg-white bg-opacity-20 p-4 shadow-lg
+            className="glass-bg z-20 flex transform-gpu cursor-pointer flex-col rounded-xl
+            border-4 border-solid border-neutral-200/30 bg-white/20 p-4 shadow-lg
             hover:-translate-y-1 motion-safe:transition-transform"
             href={url}
             target="_blank"
@@ -19,7 +19,7 @@ export default function ProjectCard({ label, description, url, children }: Proje
             aria-label={label}
         >
             <h1 className="text-2xl font-medium">{label}</h1>
-            <p className="flex-grow pt-2 text-lg font-normal leading-7">{description}</p>
+            <p className="grow pt-2 text-lg font-normal leading-7">{description}</p>
             <div className="flex flex-row items-center gap-1 pt-4">{children}</div>
         </a>
     );

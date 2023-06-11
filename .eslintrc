@@ -14,9 +14,10 @@
         "plugin:security/recommended",
         "plugin:no-unsanitized/DOM",
         "plugin:@next/next/recommended",
+        "plugin:jsdoc/recommended-typescript-error",
         "next/core-web-vitals"
       ],
-      "plugins": ["import"],
+      "plugins": ["import", "tailwindcss", "jsdoc"],
       "rules": {
         "@next/next/no-html-link-for-pages": ["error", "src/app"],
         "spaced-comment": ["error", "always", { "markers": ["/"] }],
@@ -129,12 +130,8 @@
         "unicorn/prefer-event-target": "error",
         "unicorn/prevent-abbreviations": "off",
         "unicorn/no-await-expression-member": "off",
-        "unicorn/catch-error-name": [
-          "error",
-          {
-            "name": "err"
-          }
-        ]
+        "unicorn/catch-error-name": ["error", { "name": "err" }],
+        "jsdoc/tag-lines": ["error", "any", { "startLines": 1 }]
       }
     },
     {
@@ -144,6 +141,7 @@
         "plugin:@typescript-eslint/recommended",
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
         "plugin:@typescript-eslint/strict",
+        "plugin:tailwindcss/recommended",
         "plugin:import/typescript"
       ],
       "plugins": ["@typescript-eslint"],
@@ -167,9 +165,8 @@
         "@typescript-eslint/strict-boolean-expressions": [
           "error",
           {
-            "allowString": true,
-            "allowNumber": true,
-            "allowNullableObject": true
+            "allowNullableObject": true,
+            "allowNullableBoolean": true
           }
         ],
         "@typescript-eslint/switch-exhaustiveness-check": "error",
@@ -217,7 +214,20 @@
         "no-unused-expressions": "off",
         "@typescript-eslint/no-unused-expressions": "error",
         "no-use-before-define": "off",
-        "@typescript-eslint/no-use-before-define": ["error", { "functions": false }]
+        "@typescript-eslint/no-use-before-define": ["error", { "functions": false }],
+        "tailwindcss/no-custom-classname": [
+          "error",
+          {
+            "cssFiles": [
+              "**/*.css",
+              "**/*.scss",
+              "!**/node_modules",
+              "!**/.*",
+              "!**/dist",
+              "!**/build"
+            ]
+          }
+        ]
       },
       "parser": "@typescript-eslint/parser",
       "parserOptions": {
@@ -311,7 +321,13 @@
             // React function components
             "selector": "function",
             "modifiers": ["global"],
-            "format": ["camelCase", "StrictPascalCase"]
+            "format": ["StrictPascalCase"]
+          },
+          {
+            // React forwardref components
+            "selector": "variable",
+            "modifiers": ["global", "const", "exported"],
+            "format": ["StrictPascalCase"]
           },
           {
             // Next.js dynamic components

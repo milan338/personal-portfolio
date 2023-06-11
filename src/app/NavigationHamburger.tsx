@@ -13,9 +13,9 @@ export default function NavigationHamburger() {
         <>
             <button
                 id="links-dropdown-button"
-                className="glass-bg relative flex aspect-square items-center justify-center rounded-lg border-4
-                border-solid border-neutral-200 border-opacity-30 bg-white bg-opacity-20 p-2 shadow-lg
-                hover:-translate-y-1 motion-safe:transition-transform md:p-3"
+                className="glass-bg relative flex aspect-square items-center justify-center
+                rounded-lg border-4 border-solid border-neutral-200/30 bg-white/20 p-2
+                shadow-lg hover:-translate-y-1 motion-safe:transition-transform md:p-3"
                 onClick={() => modalRef.current?.show()}
                 aria-label="open navigation modal"
                 aria-controls="navigation-modal"

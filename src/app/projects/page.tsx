@@ -52,7 +52,7 @@ export default function Projects() {
     return (
         <section
             id="projects-tabpanel"
-            className="items-left w-full"
+            className="w-full items-start"
             role="tabpanel"
             aria-label="projects"
         >
