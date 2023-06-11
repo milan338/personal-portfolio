@@ -20,7 +20,7 @@ export const Modal = forwardRef<ModalRef, ModalProps>(({ className, children, ..
 
     const show = useCallback(() => {
         dialogRef.current?.showModal();
-        dialogRef.current?.setAttribute('aria-hidden', 'false');
+        dialogRef.current?.removeAttribute('aria-hidden');
         disableScroll();
     }, [disableScroll]);
 
@@ -31,16 +31,16 @@ export const Modal = forwardRef<ModalRef, ModalProps>(({ className, children, ..
     return (
         <dialog
             ref={mergeRefs([dialogRef, preventScrollRef])}
-            className="glass-bg box motion-safe:transition-[opacity,transform] fixed inset-0 z-50 m-auto flex h-fit w-responsive transform-gpu
-            flex-row items-center justify-between rounded-xl border-4 border-solid border-neutral-200/95
-            bg-white/90 p-0 shadow-lg aria-hidden:pointer-events-none aria-hidden:scale-105
-            aria-hidden:opacity-0 aria-hidden:backdrop:opacity-0 backdrop:motion-safe:transition-opacity"
-            role="alertdialog"
+            className="glass-bg fixed inset-0 z-50 m-auto flex h-fit w-responsive transform-gpu flex-row items-center
+            justify-between rounded-xl border-4 border-solid border-neutral-200/95 bg-white/90 p-0 shadow-lg
+            aria-hidden:pointer-events-none aria-hidden:scale-105 aria-hidden:opacity-0 aria-hidden:backdrop:opacity-0
+            motion-safe:transition-[opacity,transform] backdrop:motion-safe:transition-opacity"
+            role="dialog"
             aria-modal="true"
             aria-hidden="true"
             onClose={() => {
-                enableScroll();
                 dialogRef.current?.setAttribute('aria-hidden', 'true');
+                enableScroll();
             }}
             onClick={(event) => {
                 if (event.target === event.currentTarget) close();
