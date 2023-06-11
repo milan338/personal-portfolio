@@ -5,9 +5,14 @@ import Modal from 'components/Modal';
 import { CgMenuLeftAlt } from 'react-icons/cg';
 import PathLinks from 'components/PathLinks';
 import type { ModalRef } from 'components/Modal';
+import { useMediaQuery } from 'hooks/media';
 
 export default function NavigationHamburger() {
     const modalRef = useRef<ModalRef>(null);
+
+    useMediaQuery('(min-width: 1024px)', (matches) => {
+        if (matches) modalRef.current?.close();
+    });
 
     return (
         <>
