@@ -20,9 +20,7 @@ export function useMediaQuery(query: string) {
 
         mediaQuery.addEventListener('change', listener);
 
-        return () => {
-            mediaQuery.removeEventListener('change', listener);
-        };
+        return () => mediaQuery.removeEventListener('change', listener);
     });
 
     return matches;

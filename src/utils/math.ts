@@ -19,5 +19,5 @@ export function makeDiamondVerts(
     // Diamond centroids
     const [cX, cY] = [l + w / 2, b + h / 2];
 
-    return [[...t1, ...t2], Array.from({ length: t1.length * 2 }, (el, i) => (i % 2 ? cY : cX))];
+    return [[...t1, ...t2], Array.from({ length: t1.length * 2 }, (_, i) => (i % 2 ? cY : cX))];
 }

@@ -16,7 +16,9 @@ export function withResizeObserver(cb: ResizeObserverCb, node: Element | null) {
         const { inlineSize, blockSize } = entry.contentBoxSize[0];
         cb({ width: inlineSize, height: blockSize });
     });
+
     if (node !== null) observer.observe(node);
+
     return observer;
 }
 
@@ -39,7 +41,9 @@ export function withIntersectionObserver(
         const [entry] = entries;
         cb(entry);
     }, options);
+
     if (node !== null) observer.observe(node);
+
     return observer;
 }
 
@@ -58,7 +62,9 @@ export function resizeCanvasToDisplaySize(
 ) {
     const dpi = getDpi();
     const [newWidth, newHeight] = [width * dpi, height * dpi];
+
     if (canvas.width === newWidth && canvas.height === newHeight) return;
+
     canvas.width = newWidth;
     canvas.height = newHeight;
 }

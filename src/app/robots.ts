@@ -5,11 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     const { url } = content;
 
     return {
-        rules: [
-            {
-                userAgent: '*',
-            },
-        ],
+        rules: [{ userAgent: '*' }],
         sitemap: `${url}/sitemap.xml`,
         host: url,
     };

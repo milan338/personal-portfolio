@@ -166,6 +166,8 @@
         "@typescript-eslint/strict-boolean-expressions": [
           "error",
           {
+            "allowString": true,
+            "allowNumber": true,
             "allowNullableObject": true,
             "allowNullableBoolean": true
           }
@@ -197,6 +199,15 @@
             "selector": "parameter",
             "modifiers": ["destructured"],
             "format": ["camelCase", "PascalCase"]
+          },
+          {
+            "selector": "variableLike",
+            "modifiers": ["unused"],
+            "format": null,
+            "custom": {
+              "regex": "^_*$",
+              "match": true
+            }
           }
         ],
         "@typescript-eslint/no-redundant-type-constituents": "error",
@@ -376,6 +387,15 @@
               "match": true
             },
             "format": ["UPPER_CASE"]
+          },
+          {
+            "selector": "variableLike",
+            "modifiers": ["unused"],
+            "format": null,
+            "custom": {
+              "regex": "^_*$",
+              "match": true
+            }
           }
         ]
       }
