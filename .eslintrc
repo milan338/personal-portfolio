@@ -14,7 +14,6 @@
         "plugin:security/recommended",
         "plugin:no-unsanitized/DOM",
         "plugin:@next/next/recommended",
-        "plugin:jsdoc/recommended-typescript-error",
         "next/core-web-vitals"
       ],
       "plugins": ["import", "tailwindcss", "jsdoc"],
@@ -131,7 +130,9 @@
         "unicorn/prevent-abbreviations": "off",
         "unicorn/no-await-expression-member": "off",
         "unicorn/catch-error-name": ["error", { "name": "err" }],
-        "jsdoc/tag-lines": ["error", "any", { "startLines": 1 }]
+        "jsdoc/tag-lines": ["error", "any", { "startLines": 1 }],
+        "jsdoc/require-description-complete-sentence": "error",
+        "jsdoc/require-description": "error"
       }
     },
     {
@@ -298,6 +299,23 @@
           { "warnOnSpreadAttributes": true, "links": true, "forms": true }
         ]
       }
+    },
+    {
+      "files": ["*.js"],
+      "extends": ["plugin:jsdoc/recommended-typescript-flavor-error"],
+      "rules": {
+        "jsdoc/require-description-complete-sentence": "error",
+        "jsdoc/require-description": "error"
+      }
+    },
+    {
+      "files": ["*.ts"],
+      "extends": ["plugin:jsdoc/recommended-typescript-error"],
+      "rules": {
+        "jsdoc/require-description-complete-sentence": "error",
+        "jsdoc/require-description": "error"
+      },
+      "excludedFiles": ["sitemap.ts", "robots.ts"]
     },
     {
       "files": ["*.tsx"],

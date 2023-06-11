@@ -3,8 +3,7 @@ import { withResizeObserver } from 'utils/dom';
 import { lock, unlock, clearBodyLocks } from 'tua-body-scroll-lock';
 
 /**
- * Custom React hook to get the current window size. Does not cause component rerenders, so must be
- * used outside of React, e.g. In event listeners and animation frames.
+ * Custom React hook to get the current window size. Does not cause component rerenders.
  *
  * @returns The current window dimensions.
  */
@@ -32,7 +31,7 @@ export function useWindowSize() {
  * Custom React hook to disable scrolling from all elements apart from the current element.
  *
  * @returns A ref to be set on the element that should be selected for scrolling, and callbacks to
- *   enable and disable scrolling
+ *   enable and disable scrolling.
  */
 export function usePreventScroll() {
     const targetRef = useRef<HTMLElement>(null);

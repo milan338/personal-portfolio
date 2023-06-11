@@ -46,6 +46,8 @@ export function withIntersectionObserver(
 /**
  * Resize canvas to match its real size and factor in the device pixel ratio.
  *
+ * @param width The canvas width.
+ * @param height The canvas height.
  * @param canvas The canvas to resize.
  * @see https://github.com/greggman/twgl.js/blob/master/src/twgl.js
  */

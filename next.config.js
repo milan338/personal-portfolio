@@ -24,7 +24,7 @@ const ContentSecurityPolicy = `
 const securityHeaders = [
   {
     key: 'Content-Security-Policy',
-    value: ContentSecurityPolicy.replace(/\n/gu, ''),
+    value: ContentSecurityPolicy.replaceAll('\n', ''),
   },
   {
     key: 'Referrer-Policy',
@@ -70,7 +70,7 @@ const securityHeaders = [
     key: 'Permissions-Policy',
     value: `camera=(), display-capture=(), microphone=(), geolocation=(),
     browsing-topics=(), serial=(), usb=(), payment=(), publickey-credentials-get=(),
-    execution-while-out-of-viewport=(), execution-while-not-rendered=()`.replace(/\n/gu, ''),
+    execution-while-out-of-viewport=(), execution-while-not-rendered=()`.replaceAll('\n', ''),
   },
 ];
 
