@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { withResizeObserver } from 'utils/dom';
-import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
+import { lock, unlock, clearBodyLocks } from 'tua-body-scroll-lock';
 
 /**
  * Custom React hook to get the current window size. Does not cause component rerenders, so must be
@@ -31,19 +31,25 @@ export function useWindowSize() {
 /**
  * Custom React hook to disable scrolling from all elements apart from the current element.
  *
- * @param prevent Should scrolling be prevented or not?
- * @returns A ref to be set on the element that should be selected for scrolling.
+ * @returns A ref to be set on the element that should be selected for scrolling, and callbacks to
+ *   enable and disable scrolling
  */
-export function usePreventScroll(prevent: boolean) {
+export function usePreventScroll() {
     const targetRef = useRef<HTMLElement>(null);
 
     useEffect(() => {
-        if (targetRef.current === null) return;
-        if (prevent) disableBodyScroll(targetRef.current);
-        else enableBodyScroll(targetRef.current);
+        return clearBodyLocks;
+    }, []);
 
-        return clearAllBodyScrollLocks;
-    }, [prevent]);
+    const enableScroll = () => {
+        if (!targetRef.current) return;
+        unlock(targetRef.current);
+    };
 
-    return targetRef;
+    const disableScroll = () => {
+        if (!targetRef.current) return;
+        lock(targetRef.current);
+    };
+
+    return [targetRef, enableScroll, disableScroll] as const;
 }
