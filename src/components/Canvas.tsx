@@ -1,5 +1,3 @@
-'use client';
-
 import { useResizeObserver } from 'hooks/dom';
 import { usePrefersReducedMotion } from 'hooks/media';
 import { useEffect, useRef, useState } from 'react';
@@ -13,152 +11,118 @@ import {
 } from 'twgl.js';
 import { resizeCanvasToDisplaySize, withIntersectionObserver } from 'utils/dom';
 import { mergeRefs } from 'react-merge-refs';
-import type { Size } from 'hooks/dom';
-import type { MutableRefObject, ReactNode } from 'react';
+import type { MutableRefObject } from 'react';
 import type { ProgramInfo, BufferInfo, Arrays } from 'twgl.js';
 
 export type Uniforms = Record<string, unknown>;
 
-export type CanvasCbProps = {
-    gl: WebGLRenderingContext;
-    canvasSize: MutableRefObject<Size>;
-    isCanvasVisible: MutableRefObject<boolean>;
-};
-
-export type RenderCb = (deltaTime: number, time: number) => Uniforms;
-
-export type ArraysData = {
-    arrays: Arrays;
-    changed: boolean;
+export type ArraysData<T extends Arrays> = {
+    arrays: T;
+    haveChanged: boolean;
     lastWidth: number;
     lastHeight: number;
 };
 
-type RenderCallbacks = {
-    renderCb: RenderCb;
-    arraysData: MutableRefObject<ArraysData>;
-};
+export type OnRenderCb = (deltaTime: number, time: number, gl: WebGLRenderingContext) => Uniforms;
 
-type CanvasProps = {
-    cb: (props: CanvasCbProps) => RenderCallbacks;
+export type OnCreateCb = (
+    size: MutableRefObject<{ width: number; height: number }>,
+    isCanvasVisible: MutableRefObject<boolean>
+) => void;
+
+type CanvasProps<T extends Arrays> = {
+    onRender: OnRenderCb;
+    onCreate?: OnCreateCb;
+    arraysData: MutableRefObject<ArraysData<T>>;
     vertexShader?: string;
     fragmentShader?: string;
+    clearColor?: [r: number, g: number, b: number, a: number];
     reduceMotionOnPrefer?: boolean;
-    children?: ReactNode;
 };
 
 setDefaults({ attribPrefix: 'a_' });
 
-export default function Canvas({
-    cb,
+export default function Canvas<T extends Arrays>({
+    onRender,
+    onCreate,
+    arraysData,
     vertexShader,
     fragmentShader,
+    clearColor,
     reduceMotionOnPrefer,
-    children,
-}: CanvasProps) {
+}: CanvasProps<T>) {
     const [gl, setGl] = useState<WebGLRenderingContext | null>(null);
     const [canvasSize, canvasSizeRef] = useResizeObserver();
     const prefersReducedMotion = usePrefersReducedMotion();
-    const shaders = useRef<{ vert: string; frag: string }>({ vert: '', frag: '' });
     const bufferInfo = useRef<BufferInfo>();
     const programInfo = useRef<ProgramInfo>();
-    const renderCallbacks = useRef<RenderCallbacks>();
     const isCanvasVisible = useRef(true);
     const animFrameHandle = useRef<number>();
-    const lastTime = useRef(0);
+    const lastFrameTime = useRef(0);
 
-    // Create program and buffer info
     useEffect(() => {
-        if (gl === null) return;
-        if (
-            programInfo.current === undefined ||
-            vertexShader !== shaders.current.vert ||
-            fragmentShader !== shaders.current.frag
-        ) {
-            programInfo.current = createProgramInfo(gl, [vertexShader ?? '', fragmentShader ?? '']);
-            shaders.current = { vert: vertexShader ?? '', frag: fragmentShader ?? '' };
-        }
-        renderCallbacks.current = cb({
-            gl,
-            canvasSize,
-            isCanvasVisible,
-        });
-    }, [gl, canvasSize, cb, vertexShader, fragmentShader]);
+        if (!gl) return;
+        programInfo.current = createProgramInfo(gl, [vertexShader ?? '', fragmentShader ?? '']);
+        gl.useProgram(programInfo.current.program);
+        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+        gl.clearColor(...(clearColor ?? [0, 0, 0, 0]));
+    }, [gl, vertexShader, fragmentShader, clearColor]);
 
     // Initialise render loop
     useEffect(() => {
-        if (gl === null || renderCallbacks.current === undefined) return;
+        if (!gl) return;
 
-        const { renderCb, arraysData } = renderCallbacks.current;
-
-        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
-
-        // Render loop calls render cb and requests new frame at end of current frame
         const render = (time: number) => {
-            // Update buffer info if arrays have changed
-            if (arraysData.current.changed) {
-                arraysData.current.changed = false;
+            const reduceMotion = prefersReducedMotion.current && reduceMotionOnPrefer;
+            if (reduceMotion || !programInfo.current) {
+                requestNextFrame();
+                return;
+            }
+
+            if (!bufferInfo.current || arraysData.current.haveChanged) {
+                arraysData.current.haveChanged = false;
                 bufferInfo.current = createBufferInfoFromArrays(gl, arraysData.current.arrays);
+                setBuffersAndAttributes(gl, programInfo.current, bufferInfo.current);
             }
 
             const { width, height } = canvasSize.current;
             resizeCanvasToDisplaySize(width, height, gl.canvas as HTMLCanvasElement);
             gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+            gl.clear(gl.COLOR_BUFFER_BIT);
 
-            gl.enable(gl.DEPTH_TEST);
-            gl.enable(gl.BLEND);
-            gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-            gl.clearColor(0, 0, 0, 0);
-            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+            const deltaTime = time - lastFrameTime.current;
+            setUniforms(programInfo.current, onRender(deltaTime, time, gl));
+            drawBufferInfo(gl, bufferInfo.current);
+            lastFrameTime.current = time;
 
-            const deltaTime = time - lastTime.current;
-            lastTime.current = time;
-            const uniforms = renderCb(deltaTime, time);
-
-            const reduceMotion = prefersReducedMotion.current && reduceMotionOnPrefer;
-
-            if (
-                !reduceMotion &&
-                programInfo.current !== undefined &&
-                bufferInfo.current !== undefined
-            ) {
-                gl.useProgram(programInfo.current.program);
-                setBuffersAndAttributes(gl, programInfo.current, bufferInfo.current);
-                setUniforms(programInfo.current, uniforms);
-                drawBufferInfo(gl, bufferInfo.current);
-            }
-
-            // Request the next frame if canvas is visible
-            if (isCanvasVisible.current) animFrameHandle.current = requestAnimationFrame(render);
+            requestNextFrame();
         };
+
+        function requestNextFrame() {
+            if (isCanvasVisible.current) animFrameHandle.current = requestAnimationFrame(render);
+        }
+
         // Begin render loop
         animFrameHandle.current = requestAnimationFrame(render);
 
-        // Only render while canvas on screen
         const observer = withIntersectionObserver(({ isIntersecting }) => {
             isCanvasVisible.current = isIntersecting;
-            // Last state was invisible, so manually trigger a frame to restart the frameloop
-            if (isIntersecting) animFrameHandle.current = requestAnimationFrame(render);
+            requestNextFrame();
         }, gl.canvas as HTMLCanvasElement);
 
-        // Cleanup
         return () => {
             observer.disconnect();
             if (animFrameHandle.current !== undefined)
                 cancelAnimationFrame(animFrameHandle.current);
         };
-    }, [canvasSize, gl, prefersReducedMotion, reduceMotionOnPrefer]);
+    }, [arraysData, canvasSize, gl, prefersReducedMotion, reduceMotionOnPrefer, onRender]);
 
-    // Run once on component mount, and once on unmount (with null)
     const canvasRef = (canvas: HTMLCanvasElement | null) => {
         if (canvas === null || gl !== null) return;
         setGl(canvas.getContext('webgl'));
     };
 
-    return (
-        <>
-            <canvas ref={mergeRefs([canvasRef, canvasSizeRef])} className="block h-full w-full" />
-            {children}
-        </>
-    );
+    if (onCreate) onCreate(canvasSize, isCanvasVisible);
+
+    return <canvas ref={mergeRefs([canvasRef, canvasSizeRef])} className="block h-full w-full" />;
 }
