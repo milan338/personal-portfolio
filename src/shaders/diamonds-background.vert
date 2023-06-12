@@ -23,7 +23,7 @@ float getDiamondScale(vec2 realCentroid, vec2 point, bool isCursor) {
     vec2 scaledPointPos = point * scaledResolution;
     vec2 diff = abs(scaledPointPos - realCentroid);
 
-    // Don't wrap - just return the scale without wrapping contributions, and use a scmaller radius scale
+    // Return the scale without wrapping contributions, and use a smaller radius scale
     if (isCursor) return min(1.0, length(diff) * u_radiusScale * 2.0);
 
     // Since the points wrap around the screen, must also find the wrapped distance
