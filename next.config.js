@@ -108,7 +108,7 @@ const nextConfig = withBundleAnalyser({
       {
         source: '/',
         destination: '/projects',
-        permanent: true,
+        permanent: false,
       },
     ];
   },
