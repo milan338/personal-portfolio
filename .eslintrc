@@ -419,9 +419,22 @@
       }
     },
     {
-      "files": ["*.config.js", "*.config.ts", "*.preset.js", "*.preset.ts"],
+      "files": [
+        "*.config.js",
+        "*.config.ts",
+        "**/config.js",
+        "**/config.ts",
+        "*.preset.js",
+        "*.preset.ts",
+        "*rc.js",
+        "*rc.ts"
+      ],
+      "env": {
+        "node": true
+      },
       "rules": {
-        "unicorn/prefer-module": "off"
+        "unicorn/prefer-module": "off",
+        "jsdoc/require-jsdoc": "off"
       }
     }
   ]

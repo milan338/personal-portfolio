@@ -69,6 +69,7 @@
     "stylelint-formatter-pretty": "3.2.0",
     "stylelint-high-performance-animation": "1.8.0",
     "stylelint-no-unsupported-browser-features": "6.1.0",
+    "stylelint-scss": "5.0.1",
     "tsec": "0.2.7",
     "vercel-submodules": "1.0.10",
     "webpack-glsl-minify": "1.5.0"
