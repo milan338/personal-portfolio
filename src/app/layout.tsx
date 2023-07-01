@@ -1,10 +1,10 @@
-import { Poppins } from 'next/font/google';
 import content from '@content/hero.content';
-import MainContent from './MainContent';
-import DiamondsBackground from 'components/DiamondsBackground';
-import 'styles/globals.scss';
 import Analytics from 'components/Analytics';
+import DiamondsBackground from 'components/DiamondsBackground';
 import type { Metadata } from 'next';
+import { Poppins } from 'next/font/google';
+import 'styles/globals.scss';
+import MainContent from './MainContent';
 
 const POPPINS = Poppins({
     variable: '--font-poppins',

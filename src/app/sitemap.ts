@@ -1,6 +1,6 @@
 import content from '@content/hero.content';
-import { PATHS } from 'utils/route';
 import type { MetadataRoute } from 'next';
+import { PATHS } from 'utils/route';
 
 export default function sitemap(): MetadataRoute.Sitemap {
     const { url } = content;

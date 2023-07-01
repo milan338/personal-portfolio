@@ -1,5 +1,5 @@
-import { DEV } from 'utils/window';
 import Script from 'next/script';
+import { DEV } from 'utils/window';
 
 const ANALYTICS_SRC = DEV
     ? 'https://cdn.vercel-insights.com/v1/script.debug.js'

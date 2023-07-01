@@ -1,6 +1,8 @@
 import { useResizeObserver } from 'hooks/dom';
 import { usePrefersReducedMotion } from 'hooks/media';
 import { useEffect, useRef, useState } from 'react';
+import type { MutableRefObject } from 'react';
+import { mergeRefs } from 'react-merge-refs';
 import {
     createProgramInfo,
     setDefaults,
@@ -9,10 +11,8 @@ import {
     setBuffersAndAttributes,
     setUniforms,
 } from 'twgl.js';
-import { resizeCanvasToDisplaySize, withIntersectionObserver } from 'utils/dom';
-import { mergeRefs } from 'react-merge-refs';
-import type { MutableRefObject } from 'react';
 import type { ProgramInfo, BufferInfo, Arrays } from 'twgl.js';
+import { resizeCanvasToDisplaySize, withIntersectionObserver } from 'utils/dom';
 
 export type Uniforms = Record<string, unknown>;
 

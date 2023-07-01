@@ -1,6 +1,6 @@
-import projectsContent from '@content/projects.content';
 import aboutContent from '@content/about.content';
 import heroContent from '@content/hero.content';
+import projectsContent from '@content/projects.content';
 import type { Metadata } from 'next';
 
 export const PATHS = {

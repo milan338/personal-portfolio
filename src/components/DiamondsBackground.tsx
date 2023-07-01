@@ -2,8 +2,8 @@
 
 import { useWindowSize } from 'hooks/window';
 import { useEffect, useMemo, useRef } from 'react';
-import vert from 'shaders/diamonds-background.vert';
 import frag from 'shaders/diamonds-background.frag';
+import vert from 'shaders/diamonds-background.vert';
 import { createNoise3D } from 'simplex-noise';
 import { makeDiamondVerts } from 'utils/math';
 import { getDpi } from 'utils/window';

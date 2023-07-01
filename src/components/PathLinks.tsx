@@ -1,8 +1,8 @@
-import { PATHS } from 'utils/route';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { MouseEventHandler } from 'react';
-import Link from 'next/link';
 import { Fragment } from 'react';
+import { PATHS } from 'utils/route';
 
 type PathLinksProps = {
     showSeparator?: boolean;

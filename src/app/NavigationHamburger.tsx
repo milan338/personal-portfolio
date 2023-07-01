@@ -1,11 +1,11 @@
 'use client';
 
-import { useRef } from 'react';
 import Modal from 'components/Modal';
-import { CgMenuLeftAlt } from 'react-icons/cg';
-import PathLinks from 'components/PathLinks';
 import type { ModalRef } from 'components/Modal';
+import PathLinks from 'components/PathLinks';
 import { useMediaQuery } from 'hooks/media';
+import { useRef } from 'react';
+import { CgMenuLeftAlt } from 'react-icons/cg';
 
 export default function NavigationHamburger() {
     const modalRef = useRef<ModalRef>(null);

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { withResizeObserver } from 'utils/dom';
 import { lock, unlock, clearBodyLocks } from 'tua-body-scroll-lock';
+import { withResizeObserver } from 'utils/dom';
 
 /**
  * Custom React hook to get the current window size. Does not cause component rerenders.

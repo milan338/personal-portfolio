@@ -1,5 +1,5 @@
-import { PATHS, getOgImage } from 'utils/route';
 import type { Metadata } from 'next';
+import { PATHS, getOgImage } from 'utils/route';
 
 export { default } from 'app/projects/page';
 

@@ -1,8 +1,8 @@
 'use client';
 
+import { usePreventScroll } from 'hooks/window';
 import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
 import { CgClose } from 'react-icons/cg';
-import { usePreventScroll } from 'hooks/window';
 import { mergeRefs } from 'react-merge-refs';
 
 export type ModalRef = {

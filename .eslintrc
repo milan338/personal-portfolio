@@ -13,8 +13,7 @@
         "plugin:sonarjs/recommended",
         "plugin:security/recommended",
         "plugin:no-unsanitized/DOM",
-        "plugin:@next/next/recommended",
-        "next/core-web-vitals"
+        "plugin:@next/next/recommended"
       ],
       "plugins": ["import", "tailwindcss", "jsdoc"],
       "rules": {
@@ -315,16 +314,26 @@
       "files": ["*.js"],
       "extends": ["plugin:jsdoc/recommended-typescript-flavor-error"],
       "rules": {
+        "jsdoc/require-jsdoc": ["error", { "publicOnly": true }],
         "jsdoc/require-description-complete-sentence": "error",
-        "jsdoc/require-description": "error"
+        "jsdoc/tag-lines": ["error", "any", { "startLines": 1 }],
+        "jsdoc/require-description": [
+          "error",
+          { "checkConstructors": false, "checkGetters": false, "checkSetters": false }
+        ]
       }
     },
     {
       "files": ["*.ts"],
       "extends": ["plugin:jsdoc/recommended-typescript-error"],
       "rules": {
+        "jsdoc/require-jsdoc": ["error", { "publicOnly": true }],
         "jsdoc/require-description-complete-sentence": "error",
-        "jsdoc/require-description": "error"
+        "jsdoc/tag-lines": ["error", "any", { "startLines": 1 }],
+        "jsdoc/require-description": [
+          "error",
+          { "checkConstructors": false, "checkGetters": false, "checkSetters": false }
+        ]
       },
       "excludedFiles": ["sitemap.ts", "robots.ts"]
     },
@@ -345,6 +354,24 @@
             "selector": "variable",
             "modifiers": ["global"],
             "format": ["UPPER_CASE"]
+          },
+          {
+            "selector": "variable",
+            "modifiers": ["destructured"],
+            "format": ["camelCase", "PascalCase"]
+          },
+          {
+            "selector": "parameter",
+            "format": ["camelCase", "PascalCase"]
+          },
+          {
+            "selector": "variableLike",
+            "modifiers": ["unused"],
+            "format": null,
+            "custom": {
+              "regex": "^_*$",
+              "match": true
+            }
           },
           {
             // React function components
@@ -387,15 +414,6 @@
               "match": true
             },
             "format": ["UPPER_CASE"]
-          },
-          {
-            "selector": "variableLike",
-            "modifiers": ["unused"],
-            "format": null,
-            "custom": {
-              "regex": "^_*$",
-              "match": true
-            }
           }
         ]
       }

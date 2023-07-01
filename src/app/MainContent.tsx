@@ -1,11 +1,11 @@
 'use client';
 
-import HeroSection from './HeroSection';
 import NavigationHamburger from 'app/NavigationHamburger';
-import { PATHS } from 'utils/route';
-import { usePathname } from 'next/navigation';
 import PathLinks from 'components/PathLinks';
+import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
+import { PATHS } from 'utils/route';
+import HeroSection from './HeroSection';
 
 type MainContentProps = {
     children?: ReactNode;
