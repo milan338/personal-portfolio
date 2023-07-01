@@ -1,24 +1,16 @@
 import content from '@content/hero.content';
 import Button from 'components/Button';
-import { SiGithub, SiLinkedin } from 'react-icons/si';
-import type { IconType } from 'react-icons';
-
-const ICONS: Record<(typeof content)['links'][number]['icon'], IconType> = {
-    github: SiGithub,
-    linkedin: SiLinkedin,
-};
 
 export default function HeroSection() {
     const { heading, subheading, links, contactButtonLabel, mail } = content;
 
-    const linkButtons = links.map(({ label, url, icon }) => {
-        // eslint-disable-next-line security/detect-object-injection
-        const Icon = ICONS[icon];
+    const linkButtons = links.map(({ label, url, Icon }) => {
         return (
             <a key={label} href={url} target="_blank" rel="noreferrer noopener" aria-label={label}>
                 <Icon
                     className="h-9 w-9 text-slate-800 opacity-70 hover:opacity-100
                     motion-safe:transition-opacity"
+                    aria-label={`${label} icon`}
                 />
             </a>
         );

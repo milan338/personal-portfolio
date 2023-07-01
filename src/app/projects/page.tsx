@@ -1,36 +1,8 @@
 import content from '@content/projects.content';
 import MoreProjectsCard from 'components/MoreProjectsCard';
 import ProjectCard from 'components/ProjectCard';
-import {
-    SiC,
-    SiCsharp,
-    SiNextdotjs,
-    SiReact,
-    SiThreedotjs,
-    SiTypescript,
-    SiUnity,
-    SiCplusplus,
-    SiArduino,
-    SiPython,
-    SiQt,
-} from 'react-icons/si';
-import type { IconType } from 'react-icons';
 import type { Metadata } from 'next';
 import { PATHS, getOgImage } from 'utils/route';
-
-const ICONS: Record<(typeof content)['projects'][number]['icons'][number], IconType> = {
-    c: SiC,
-    'c#': SiCsharp,
-    'next.js': SiNextdotjs,
-    react: SiReact,
-    'three.js': SiThreedotjs,
-    typescript: SiTypescript,
-    unity: SiUnity,
-    'c++': SiCplusplus,
-    arduino: SiArduino,
-    python: SiPython,
-    qt: SiQt,
-};
 
 export default function Projects() {
     const { projects } = content;
@@ -38,13 +10,13 @@ export default function Projects() {
     const projectCards = projects.map(({ label, description, url, icons }) => {
         return (
             <ProjectCard key={label} label={label} description={description} url={url}>
-                {icons.map((iconName) => {
-                    // eslint-disable-next-line security/detect-object-injection
-                    const Icon = ICONS[iconName];
-                    return (
-                        <Icon key={`${label}-${iconName}`} className="h-6 w-6 text-slate-800 " />
-                    );
-                })}
+                {Object.entries(icons).map(([name, Icon]) => (
+                    <Icon
+                        key={name}
+                        className="h-6 w-6 text-slate-800"
+                        aria-label={`${name} icon`}
+                    />
+                ))}
             </ProjectCard>
         );
     });
