@@ -18,7 +18,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
     return (
         <html lang="en" className={`${POPPINS.variable} bg-neutral-50`}>
             <body className="w-screen overflow-y-auto overflow-x-hidden pb-20">
-                <div id="window-size" className="invisible absolute -z-50 h-screen w-screen" />
                 <main className="flex h-full min-h-0 w-full justify-center">
                     <DiamondsBackground />
                     <MainContent>{children}</MainContent>

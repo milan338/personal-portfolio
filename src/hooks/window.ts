@@ -2,6 +2,8 @@ import { useEffect, useRef } from 'react';
 import { lock, unlock, clearBodyLocks } from 'tua-body-scroll-lock';
 import { withResizeObserver } from 'utils/dom';
 
+let WINDOW_SIZE_ELEMENT: HTMLDivElement | undefined;
+
 /**
  * Custom React hook to get the current window size. Does not cause component rerenders.
  *
@@ -11,15 +13,23 @@ export function useWindowSize() {
     const size = useRef({ width: 0, height: 0 });
 
     useEffect(() => {
-        // Can't observe the document.body element since it will give the wrong height
-        const windowSizeElement = document.querySelector('#window-size');
-        if (windowSizeElement === null) throw new Error('Failed to get window size');
+        if (!WINDOW_SIZE_ELEMENT) {
+            WINDOW_SIZE_ELEMENT = document.createElement('div');
+            WINDOW_SIZE_ELEMENT.classList.add(
+                'invisible',
+                'absolute',
+                '-z-50',
+                'h-screen',
+                'w-screen'
+            );
+            document.querySelector('body')?.append(WINDOW_SIZE_ELEMENT);
+        }
 
         // Resize observer correctly identifies resizes where window.addEventListener('resize', cb) fails to
         const observer = withResizeObserver(({ width, height }) => {
             size.current.width = width;
             size.current.height = height;
-        }, windowSizeElement);
+        }, WINDOW_SIZE_ELEMENT);
 
         return () => observer.disconnect();
     }, []);
