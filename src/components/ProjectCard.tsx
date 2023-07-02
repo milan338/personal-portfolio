@@ -18,8 +18,8 @@ export default function ProjectCard({ label, description, url, children }: Proje
             rel="noreferrer noopener"
             aria-label={label}
         >
-            <h1 className="text-2xl font-medium">{label}</h1>
-            <p className="grow pt-2 text-lg font-normal leading-7">{description}</p>
+            <h1 className="text-xl font-medium sm:text-2xl">{label}</h1>
+            <p className="grow pt-2 text-base font-normal leading-7 sm:text-lg">{description}</p>
             <div className="flex flex-row items-center gap-1 pt-4">{children}</div>
         </a>
     );

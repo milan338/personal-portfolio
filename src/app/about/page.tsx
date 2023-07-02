@@ -6,7 +6,10 @@ export default function About() {
     const { paragraphs } = content;
 
     const mainContent = paragraphs.map((p) => (
-        <p key={p} className="text-lg font-normal leading-8">
+        <p
+            key={p}
+            className="text-sm font-normal leading-6 sm:text-base sm:leading-7 md:text-lg md:leading-8"
+        >
             {p}
         </p>
     ));

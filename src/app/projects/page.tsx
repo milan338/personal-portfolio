@@ -13,7 +13,7 @@ export default function Projects() {
                 {Object.entries(icons).map(([name, Icon]) => (
                     <Icon
                         key={name}
-                        className="h-6 w-6 text-slate-800"
+                        className="h-5 w-5 text-slate-800 sm:h-6 sm:w-6"
                         aria-label={`${name} icon`}
                     />
                 ))}
