@@ -31,10 +31,10 @@ export const Modal = forwardRef<ModalRef, ModalProps>(({ className, children, ..
     return (
         <dialog
             ref={mergeRefs([dialogRef, preventScrollRef])}
-            className="glass-bg fixed inset-0 z-50 m-auto flex h-fit w-responsive transform-gpu flex-row items-center
-            justify-between rounded-xl border-4 border-solid border-neutral-200/95 bg-white/90 p-0 shadow-lg
-            aria-hidden:pointer-events-none aria-hidden:scale-105 aria-hidden:opacity-0 aria-hidden:backdrop:opacity-0
-            motion-safe:transition-[opacity,transform] backdrop:motion-safe:transition-opacity"
+            className="fixed inset-0 z-50 flex h-screen max-h-screen w-screen max-w-[100vw] transform-gpu flex-row
+            items-center justify-center bg-transparent p-0 aria-hidden:pointer-events-none aria-hidden:scale-105
+            aria-hidden:opacity-0 aria-hidden:backdrop:opacity-0 motion-safe:transition-[opacity,transform]
+            backdrop:motion-safe:transition-opacity"
             role="dialog"
             aria-modal="true"
             aria-hidden="true"
@@ -47,14 +47,19 @@ export const Modal = forwardRef<ModalRef, ModalProps>(({ className, children, ..
             }}
             {...props}
         >
-            <div className={`flex w-full flex-col ${className ?? ''}`}>{children}</div>
-            <button
-                className="absolute right-4 top-4 h-6 w-6"
-                onClick={close}
-                aria-label="close modal"
+            <div
+                className={`glass-bg flex h-fit w-responsive transform-gpu flex-col rounded-xl border-4 border-solid
+                border-neutral-200/95 bg-white/90 shadow-lg ${className ?? ''}`}
             >
-                <CgClose className="h-full w-full" />
-            </button>
+                {children}
+                <button
+                    className="absolute right-4 top-4 h-6 w-6"
+                    onClick={close}
+                    aria-label="close modal"
+                >
+                    <CgClose className="h-full w-full" />
+                </button>
+            </div>
         </dialog>
     );
 });

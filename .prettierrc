@@ -1,5 +1,10 @@
 {
-  "plugins": ["prettier-plugin-jsdoc", "@trivago/prettier-plugin-sort-imports"],
+  "plugins": [
+    "@trivago/prettier-plugin-sort-imports",
+    "prettier-plugin-jsdoc",
+    "prettier-plugin-tailwindcss"
+  ],
+  "pluginSearchDirs": false,
   "trailingComma": "es5",
   "bracketSpacing": true,
   "bracketSameLine": false,
