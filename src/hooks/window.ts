@@ -18,6 +18,7 @@ export function useWindowSize() {
             WINDOW_SIZE_ELEMENT.classList.add(
                 'invisible',
                 'absolute',
+                'top-0',
                 '-z-50',
                 'h-screen',
                 'w-screen'
