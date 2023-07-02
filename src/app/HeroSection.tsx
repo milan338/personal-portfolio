@@ -18,7 +18,9 @@ export default function HeroSection() {
 
     return (
         <section className="w-full items-start pt-14">
-            <h1 className="mx-[-6px] text-6xl font-medium sm:text-7xl md:text-8xl">{heading}</h1>
+            <h1 className="mx-[-4px] text-6xl font-medium sm:mx-[-5px] sm:text-7xl md:mx-[-6px] md:text-8xl">
+                {heading}
+            </h1>
             <h2 className="text-base font-normal sm:w-2/3 sm:text-lg md:text-2xl">{subheading}</h2>
             <div className="flex flex-col items-start gap-6 pt-5 text-center sm:flex-row sm:items-center">
                 <Button
