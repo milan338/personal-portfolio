@@ -40,7 +40,7 @@ export async function GET({ nextUrl }: NextRequest) {
             <div tw="flex flex-col items-start justify-between">
                 <h1 tw="pb-36 text-[10rem] font-normal">{searchParams.get('title')}</h1>
                 <div tw="flex h-auto w-full flex-col items-start justify-center">
-                    <h2 tw="mx-[-6px] text-8xl font-normal">{heading}</h2>
+                    <h2 tw="-my-1 mx-[-6px] text-8xl font-normal">{heading}</h2>
                     <h3 tw="w-1/3 text-3xl font-normal">{subheading}</h3>
                 </div>
             </div>
